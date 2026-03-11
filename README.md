@@ -11,6 +11,12 @@
 
 [Özellikler](#-özellikler) • [Kurulum](#-kurulum) • [Kullanım](#-kullanım) • [Dokümantasyon](#-dokümantasyon) • [Katkıda Bulunma](#-katkıda-bulunma)
 
+### 🎥 Demo Video
+
+[![PetVoice AI Demo](https://img.youtube.com/vi/FpICvQ-c_i8/maxresdefault.jpg)](https://youtu.be/FpICvQ-c_i8)
+
+**[▶️ Videoyu İzle](https://youtu.be/FpICvQ-c_i8)**
+
 </div>
 
 ---
