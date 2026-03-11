@@ -315,7 +315,7 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 Sorularınız veya önerileriniz için:
 
 - **GitHub Issues**: [Sorun bildirin](https://github.com/gkhamtyln/petvoice-ai/issues)
-- **Email**: your-email@example.com
+- **Email**: tylngkhn@gmail.com
 
 ## 🗺️ Yol Haritası
 
