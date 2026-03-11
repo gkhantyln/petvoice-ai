@@ -13,7 +13,7 @@
 
 ### 🎥 Demo Video
 
-[![PetVoice AI Demo](https://img.youtube.com/vi/FpICvQ-c_i8/maxresdefault.jpg)](https://youtu.be/FpICvQ-c_i8)
+[![PetVoice AI Demo](https://img.youtube.com/vi/FpICvQ-c_i8/0.jpg)](https://youtu.be/FpICvQ-c_i8)
 
 **[▶️ Videoyu İzle](https://youtu.be/FpICvQ-c_i8)**
 
