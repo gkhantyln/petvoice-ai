@@ -1,0 +1,215 @@
+/* 
+ * PetVoice AI Custom Styles
+ * Bu dosya, uygulamanın özel CSS stillerini içerir
+ */
+
+/* Apply Be Vietnam Pro font throughout the site */
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    padding-top: 0;
+}
+
+/* Vibrant animal-friendly color palette */
+:root {
+  --soft-blue: #4dabf7;     /* More vibrant blue */
+  --soft-green: #51cf66;    /* More vibrant green */
+  --soft-yellow: #fcc419;   /* More vibrant yellow */
+  --soft-pink: #f06595;     /* More vibrant pink */
+  --soft-purple: #cc5de8;   /* More vibrant purple */
+  --soft-red: #ff6b6b;      /* More vibrant red */
+  --primary-soft: #339af0;  /* More vibrant primary */
+  --secondary-soft: #40c057; /* More vibrant secondary */
+  --accent-soft: #ff6b6b;   /* More vibrant accent */
+}
+
+/* Gradient background animation */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--soft-blue), var(--soft-green), var(--soft-yellow));
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Hero section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+}
+
+/* Feature cards */
+.feature-card {
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  height: 100%;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  font-size: 2rem;
+  color: white;
+}
+
+/* Step circles */
+.step-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  margin: 0 auto 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* CTA buttons */
+.btn-cta {
+  border: none;
+  border-radius: 50px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.btn-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.btn-primary-soft {
+  background: linear-gradient(45deg, var(--primary-soft), var(--secondary-soft));
+  color: white;
+}
+
+.btn-secondary-soft {
+  background: linear-gradient(45deg, var(--accent-soft), #fa5252);
+  color: white;
+}
+
+.btn-light-soft {
+  background: linear-gradient(45deg, #ffd43b, #fcc419);
+  color: #333;
+}
+
+/* Animation classes */
+.animated-element {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animated-element.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card hover effect */
+.card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+/* Custom button styles */
+.btn-primary {
+    background-color: #667eea;
+    border-color: #667eea;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: #5a6fd8;
+    border-color: #5a6fd8;
+}
+
+/* Footer styles */
+footer a {
+    text-decoration: none;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Stats cards */
+.card-stats {
+    border-left: 4px solid #667eea;
+}
+
+/* Form styles */
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Alert styles */
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* Progress bar customization */
+.progress-bar {
+    transition: width 1s ease-in-out;
+}
+
+/* Apply font to headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .display-5 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-cta {
+        margin-bottom: 10px;
+    }
+    
+    body {
+        padding-top: 0;
+    }
+}

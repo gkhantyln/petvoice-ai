@@ -1,0 +1,322 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <!-- Vibrant gradients -->
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4dabf7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#51cf66;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fcc419;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="dogGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4a76a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b37730;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="catGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0c7b1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d99d8a;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="birdGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4dabf7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cc5de8;stop-opacity:1" />
+    </linearGradient>
+    
+    <radialGradient id="soundWaveGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#51cf66;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#339af0;stop-opacity:0.2" />
+    </radialGradient>
+    
+    <!-- Filters for glow effects -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#51cf66" flood-opacity="0.8" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#ff6b6b" flood-opacity="0.8" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Animation keyframes -->
+    <style>
+      @keyframes float {
+        0% { transform: translateY(0px) translateX(0px); }
+        25% { transform: translateY(-25px) translateX(5px); }
+        50% { transform: translateY(0px) translateX(0px); }
+        75% { transform: translateY(-15px) translateX(-5px); }
+        100% { transform: translateY(0px) translateX(0px); }
+      }
+      
+      @keyframes floatReverse {
+        0% { transform: translateY(0px) translateX(0px); }
+        25% { transform: translateY(-20px) translateX(-7px); }
+        50% { transform: translateY(0px) translateX(0px); }
+        75% { transform: translateY(-30px) translateX(7px); }
+        100% { transform: translateY(0px) translateX(0px); }
+      }
+      
+      @keyframes floatDiagonal {
+        0% { transform: translateY(0px) translateX(0px); }
+        25% { transform: translateY(-30px) translateX(20px); }
+        50% { transform: translateY(0px) translateX(0px); }
+        75% { transform: translateY(-20px) translateX(-20px); }
+        100% { transform: translateY(0px) translateX(0px); }
+      }
+      
+      @keyframes tailWag {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(25deg); }
+        50% { transform: rotate(0deg); }
+        75% { transform: rotate(-25deg); }
+        100% { transform: rotate(0deg); }
+      }
+      
+      @keyframes earMove {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(10deg); }
+        50% { transform: rotate(0deg); }
+        75% { transform: rotate(-10deg); }
+        100% { transform: rotate(0deg); }
+      }
+      
+      @keyframes wingFlap {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(-20deg); }
+        50% { transform: rotate(0deg); }
+        75% { transform: rotate(20deg); }
+        100% { transform: rotate(0deg); }
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 0.7; }
+        50% { transform: scale(1.1); opacity: 0.9; }
+        100% { transform: scale(1); opacity: 0.7; }
+      }
+      
+      @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .floating {
+        animation: float 4s ease-in-out infinite;
+        transform-origin: center;
+      }
+      
+      .floating-reverse {
+        animation: floatReverse 5s ease-in-out infinite;
+        transform-origin: center;
+      }
+      
+      .floating-diagonal {
+        animation: floatDiagonal 6s ease-in-out infinite;
+        transform-origin: center;
+      }
+      
+      .tail {
+        animation: tailWag 1.5s ease-in-out infinite;
+        transform-origin: center;
+      }
+      
+      .ear {
+        animation: earMove 2s ease-in-out infinite;
+        transform-origin: center;
+      }
+      
+      .wing {
+        animation: wingFlap 2.5s ease-in-out infinite;
+        transform-origin: center;
+      }
+      
+      .pulse {
+        animation: pulse 3s ease-in-out infinite;
+      }
+      
+      .rotate {
+        animation: rotate 20s linear infinite;
+      }
+    </style>
+  </defs>
+  
+  <!-- Animated background with gradient -->
+  <rect width="100%" height="100%" fill="url(#skyGradient)" />
+  
+  <!-- Rotating decorative elements -->
+  <g class="rotate" opacity="0.1">
+    <circle cx="200" cy="150" r="100" fill="#ff6b6b" />
+    <circle cx="600" cy="400" r="80" fill="#51cf66" />
+    <circle cx="400" cy="100" r="60" fill="#cc5de8" />
+  </g>
+  
+  <!-- Pulsing sound waves -->
+  <g>
+    <circle cx="400" cy="300" r="150" fill="url(#soundWaveGradient)" class="pulse" />
+    <circle cx="400" cy="300" r="100" fill="url(#soundWaveGradient)" class="pulse" style="animation-delay: 0.5s;" />
+    <circle cx="400" cy="300" r="50" fill="url(#soundWaveGradient)" class="pulse" style="animation-delay: 1s;" />
+  </g>
+  
+  <!-- Decorative stars -->
+  <g fill="white" opacity="0.8">
+    <polygon points="100,80 105,95 120,95 108,105 113,120 100,110 87,120 92,105 80,95 95,95" />
+    <polygon points="650,120 655,135 670,135 658,145 663,160 650,150 637,160 642,145 630,135 645,135" />
+    <polygon points="300,60 305,75 320,75 308,85 313,100 300,90 287,100 292,85 280,75 295,75" />
+    <polygon points="700,200 705,215 720,215 708,225 713,240 700,230 687,240 692,225 680,215 695,215" />
+  </g>
+  
+  <!-- Main animated Dog with glow effect -->
+  <g class="floating" filter="url(#glow)">
+    <!-- Dog shadow -->
+    <ellipse cx="5" cy="45" rx="50" ry="15" fill="rgba(0,0,0,0.2)" />
+    
+    <!-- Dog body -->
+    <ellipse cx="0" cy="0" rx="45" ry="30" fill="url(#dogGradient)" />
+    
+    <!-- Dog head -->
+    <circle cx="-40" cy="-15" r="30" fill="url(#dogGradient)" />
+    
+    <!-- Dog ears -->
+    <g class="ear">
+      <ellipse cx="-55" cy="-35" rx="12" ry="18" fill="#8b5a2b" />
+      <ellipse cx="-25" cy="-35" rx="12" ry="18" fill="#8b5a2b" />
+    </g>
+    
+    <!-- Dog eyes -->
+    <circle cx="-47" cy="-22" r="4" fill="#333" />
+    <circle cx="-33" cy="-22" r="4" fill="#333" />
+    <circle cx="-45" cy="-20" r="1.5" fill="white" />
+    <circle cx="-31" cy="-20" r="1.5" fill="white" />
+    
+    <!-- Dog nose -->
+    <ellipse cx="-50" cy="-10" rx="5" ry="3" fill="#333" />
+    
+    <!-- Dog mouth -->
+    <path d="M-55 -5 Q-50 0 -45 -5" stroke="#333" stroke-width="2" fill="none" />
+    
+    <!-- Dog tail -->
+    <g class="tail">
+      <path d="M45 -15 Q70 -40 60 -50" stroke="#b37730" stroke-width="8" fill="none" stroke-linecap="round" />
+    </g>
+    
+    <!-- Dog legs -->
+    <rect x="-40" y="20" width="10" height="30" fill="#8b5a2b" rx="5" />
+    <rect x="-15" y="20" width="10" height="30" fill="#8b5a2b" rx="5" />
+    <rect x="15" y="20" width="10" height="30" fill="#8b5a2b" rx="5" />
+    <rect x="35" y="20" width="10" height="30" fill="#8b5a2b" rx="5" />
+  </g>
+  
+  <!-- Animated Cat with glow effect -->
+  <g class="floating-reverse" filter="url(#glow)" transform="translate(0, -20)">
+    <!-- Cat shadow -->
+    <ellipse cx="5" cy="55" rx="45" ry="12" fill="rgba(0,0,0,0.2)" />
+    
+    <!-- Cat body -->
+    <ellipse cx="0" cy="0" rx="40" ry="25" fill="url(#catGradient)" />
+    
+    <!-- Cat head -->
+    <circle cx="40" cy="-15" r="25" fill="url(#catGradient)" />
+    
+    <!-- Cat ears -->
+    <g class="ear">
+      <path d="M25 -35 L18 -50 L32 -50 Z" fill="#d99d8a" />
+      <path d="M55 -35 L48 -50 L62 -50 Z" fill="#d99d8a" />
+      <path d="M27 -37 L22 -47 L30 -47 Z" fill="#ffb6c1" />
+      <path d="M53 -37 L48 -47 L56 -47 Z" fill="#ffb6c1" />
+    </g>
+    
+    <!-- Cat eyes -->
+    <ellipse cx="32" cy="-22" rx="4" ry="6" fill="#333" />
+    <ellipse cx="48" cy="-22" rx="4" ry="6" fill="#333" />
+    <ellipse cx="34" cy="-24" rx="1.5" ry="2" fill="white" />
+    <ellipse cx="50" cy="-24" rx="1.5" ry="2" fill="white" />
+    
+    <!-- Cat nose -->
+    <path d="M40 -10 L37 -6 L43 -6 Z" fill="#ffb6c1" />
+    
+    <!-- Cat mouth -->
+    <path d="M40 -5 Q35 -2 40 0" stroke="#333" stroke-width="1.5" fill="none" />
+    <path d="M40 -5 Q45 -2 40 0" stroke="#333" stroke-width="1.5" fill="none" />
+    
+    <!-- Cat tail -->
+    <g class="tail">
+      <path d="M-40 5 Q-70 -30 -60 -50" stroke="#d99d8a" stroke-width="8" fill="none" stroke-linecap="round" />
+    </g>
+    
+    <!-- Cat legs -->
+    <rect x="-30" y="15" width="8" height="25" fill="#b36a50" rx="4" />
+    <rect x="-12" y="15" width="8" height="25" fill="#b36a50" rx="4" />
+    <rect x="12" y="15" width="8" height="25" fill="#b36a50" rx="4" />
+    <rect x="30" y="15" width="8" height="25" fill="#b36a50" rx="4" />
+  </g>
+  
+  <!-- Animated Bird with glow effect -->
+  <g class="floating-diagonal" filter="url(#glow2)">
+    <!-- Bird shadow -->
+    <ellipse cx="3" cy="20" rx="20" ry="5" fill="rgba(0,0,0,0.2)" />
+    
+    <!-- Bird body -->
+    <ellipse cx="0" cy="0" rx="18" ry="12" fill="url(#birdGradient)" />
+    
+    <!-- Bird head -->
+    <circle cx="20" cy="-8" r="12" fill="url(#birdGradient)" />
+    
+    <!-- Bird eye -->
+    <circle cx="23" cy="-10" r="2.5" fill="#333" />
+    <circle cx="24" cy="-9" r="1" fill="white" />
+    
+    <!-- Bird beak -->
+    <path d="M25 -8 L35 -5 L25 -2 Z" fill="#ffa07a" />
+    
+    <!-- Bird wing -->
+    <g class="wing">
+      <ellipse cx="-5" cy="-5" rx="15" ry="8" fill="#339af0" />
+    </g>
+    
+    <!-- Bird tail feathers -->
+    <g>
+      <path d="M-15 0 L-30 -15 L-25 0 L-30 15 Z" fill="#4dabf7" />
+    </g>
+  </g>
+  
+  <!-- Additional sound waves -->
+  <g stroke="#ffffff" stroke-width="2" fill="none" opacity="0.6">
+    <circle cx="200" cy="250" r="40" class="floating">
+      <animate attributeName="r" values="40;60;40" dur="2s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="600" cy="200" r="30" class="floating-reverse">
+      <animate attributeName="r" values="30;50;30" dur="2.5s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.5s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="350" cy="100" r="25" class="floating-diagonal">
+      <animate attributeName="r" values="25;45;25" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  
+  <!-- Decorative sound icons -->
+  <g fill="#ffffff" opacity="0.9">
+    <path d="M180 200 L170 190 L180 180 L190 190 Z" class="floating" />
+    <path d="M620 170 L610 160 L620 150 L630 160 Z" class="floating-reverse" />
+    <path d="M370 100 L360 90 L370 80 L380 90 Z" class="floating-diagonal" />
+  </g>
+  
+  <!-- Central sound icon with glow -->
+  <g filter="url(#glow2)" transform="translate(400, 300)">
+    <circle cx="0" cy="0" r="30" fill="#ff6b6b" />
+    <path d="M-10 -10 L0 -20 L10 -10 L10 10 L0 20 L-10 10 Z" fill="white" />
+    <circle cx="0" cy="0" r="40" fill="none" stroke="#ff6b6b" stroke-width="2" opacity="0.5">
+      <animate attributeName="r" values="30;50;30" dur="2s" repeatCount="indefinite" />
+    </circle>
+  </g>
+</svg>

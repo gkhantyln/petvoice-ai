@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}PetVoice AI - Evcil Hayvanlarım{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Pets page specific styles */
+    .pets-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .pets-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(30deg);
+    }
+    
+    .pet-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        height: 100%;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        position: relative;
+    }
+    
+    .pet-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .pet-card-header {
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .pet-card-body {
+        padding: 1.5rem;
+    }
+    
+    .pet-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--soft-yellow), var(--soft-pink));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin: 0 auto 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .pet-card:hover .pet-icon {
+        transform: scale(1.1);
+    }
+    
+    .pet-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .pet-info-item {
+        padding: 0.75rem;
+        border-radius: 8px;
+        background: rgba(102, 126, 234, 0.05);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+    
+    .pet-info-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .pet-info-value {
+        font-weight: 500;
+        color: #212529;
+    }
+    
+    .pet-card-footer {
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        padding: 1rem 1.5rem;
+    }
+    
+    .btn-pet-action {
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        padding: 10px 15px;
+    }
+    
+    .btn-pet-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #4dabf7, #3b5bdb);
+        border: none;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #3b5bdb, #4dabf7);
+        color: white;
+    }
+    
+    .btn-outline-secondary {
+        background: linear-gradient(135deg, #3bc9db, #15aabf);
+        border: none;
+        color: white;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: linear-gradient(135deg, #15aabf, #3bc9db);
+        color: white;
+    }
+    
+    .btn-add-pet {
+        border-radius: 12px;
+        padding: 12px 25px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(255, 154, 158, 0.3);
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        color: #495057;
+    }
+    
+    .btn-add-pet::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: 0.5s;
+    }
+    
+    .btn-add-pet:hover::before {
+        left: 100%;
+    }
+    
+    .btn-add-pet:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 154, 158, 0.4);
+        background: linear-gradient(135deg, #fad0c4, #ff9a9e);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        margin: 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .empty-state::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(30deg);
+    }
+    
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #adb5bd;
+        margin-bottom: 1.5rem;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .section-header {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        border-radius: 2px;
+    }
+    
+    /* Paw print effect */
+    .paw-print {
+        position: absolute;
+        opacity: 0.05;
+        z-index: 0;
+        color: #667eea;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .paw-container {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(0) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-10px) rotate(5deg);
+        }
+        100% {
+            transform: translateY(0) rotate(0deg);
+        }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .pet-info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 paw-container">
+    <!-- Pets Header -->
+    <div class="pets-header">
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h1 class="mb-3">Evcil Hayvanlarım</h1>
+                <p class="mb-0 lead">Evcil hayvanlarınızı yönetin ve ses analizi yapın.</p>
+            </div>
+            <div class="col-lg-3 text-center d-none d-lg-block">
+                <i class="fas fa-paw fa-4x opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="section-header mb-0">
+                    <h3>Hayvan Listesi</h3>
+                </div>
+                <a href="{{ url_for('analysis.add_pet') }}" class="btn btn-add-pet">
+                    <i class="fas fa-plus me-2"></i>Yeni Evcil Hayvan Ekle
+                </a>
+            </div>
+            
+            {% if pets %}
+            <div class="row">
+                {% for pet in pets %}
+                <div class="col-md-4 mb-4">
+                    <div class="card pet-card">
+                        <div class="pet-card-header">
+                            <h5 class="mb-0">{{ pet.name }}</h5>
+                        </div>
+                        <div class="pet-card-body">
+                            <div class="pet-icon">
+                                <i class="fas fa-paw"></i>
+                            </div>
+                            <div class="pet-info-grid">
+                                <div class="pet-info-item">
+                                    <div class="pet-info-label">Tür:</div>
+                                    <div class="pet-info-value">{{ pet.species }}</div>
+                                </div>
+                                {% if pet.breed %}
+                                <div class="pet-info-item">
+                                    <div class="pet-info-label">Cins:</div>
+                                    <div class="pet-info-value">{{ pet.breed }}</div>
+                                </div>
+                                {% endif %}
+                                {% if pet.age %}
+                                <div class="pet-info-item">
+                                    <div class="pet-info-label">Yaş:</div>
+                                    <div class="pet-info-value">{{ pet.age }}</div>
+                                </div>
+                                {% endif %}
+                                {% if pet.gender %}
+                                <div class="pet-info-item">
+                                    <div class="pet-info-label">Cinsiyet:</div>
+                                    <div class="pet-info-value">{{ pet.gender }}</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="pet-card-footer">
+                            <a href="{{ url_for('analysis.upload_sound') }}?pet_id={{ pet.id }}" class="btn btn-primary btn-pet-action w-100">
+                                <i class="fas fa-microphone-alt me-2"></i>Ses Analizi Yap
+                            </a>
+                            <a href="{{ url_for('analysis.edit_pet', pet_id=pet.id) }}" class="btn btn-outline-secondary btn-pet-action w-100">
+                                <i class="fas fa-edit me-2"></i>Düzenle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-paw"></i>
+                </div>
+                <h3>Henüz evcil hayvan eklememişsiniz</h3>
+                <p class="lead mb-4">Hayvanlarınızı ekleyerek ses analizi yapmaya başlayın.</p>
+                <a href="{{ url_for('analysis.add_pet') }}" class="btn btn-add-pet btn-lg">
+                    <i class="fas fa-plus me-2"></i>İlk Evcil Hayvanımı Ekle
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Create paw prints in the background
+document.addEventListener('DOMContentLoaded', function() {
+    const pawContainer = document.querySelector('.paw-container');
+    
+    // Create decorative paw prints
+    for (let i = 0; i < 20; i++) {
+        const paw = document.createElement('div');
+        paw.classList.add('paw-print');
+        paw.innerHTML = '<i class="fas fa-paw"></i>';
+        paw.style.left = Math.random() * 100 + '%';
+        paw.style.top = Math.random() * 100 + '%';
+        paw.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        paw.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+        paw.style.animationDelay = Math.random() * 5 + 's';
+        pawContainer.appendChild(paw);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}PetVoice AI - Yönetici Paneli{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Admin Dashboard specific styles */
+    .admin-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card-primary {
+        background: linear-gradient(135deg, #3498db, #667eea);
+        color: white;
+    }
+    
+    .stat-card-success {
+        background: linear-gradient(135deg, #2ecc71, #20c997);
+        color: white;
+    }
+    
+    .stat-card-info {
+        background: linear-gradient(135deg, #3498db, #9b59b6);
+        color: white;
+    }
+    
+    .stat-card-warning {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+    }
+    
+    .stat-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .stat-card h5 {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-card .display-6 {
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+    
+    .admin-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .admin-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    
+    .admin-card-header {
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+        border: none;
+        padding: 1.25rem;
+    }
+    
+    .list-group-item {
+        border-radius: 10px !important;
+        border: 1px solid #e9ecef !important;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .list-group-item:hover {
+        background-color: rgba(135, 206, 235, 0.1);
+        transform: translateX(5px);
+    }
+    
+    .list-group-item-action {
+        color: #495057;
+        font-weight: 500;
+    }
+    
+    .list-group-item-action:hover {
+        color: var(--soft-blue);
+        background-color: rgba(135, 206, 235, 0.15);
+    }
+    
+    .badge-success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+    
+    .badge-secondary {
+        background: linear-gradient(135deg, #6c757d, #495057);
+    }
+    
+    .section-header {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        border-radius: 2px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h1 class="mb-3">Yönetici Paneli</h1>
+                <p class="mb-0 lead">Sistem istatistikleri ve yönetim işlemleri</p>
+            </div>
+            <div class="col-lg-3 text-center d-none d-lg-block">
+                <i class="fas fa-user-shield fa-4x opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="section-header">
+                <h3>Sistem İstatistikleri</h3>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Admin Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card stat-card-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Toplam Kullanıcı</h5>
+                    <p class="card-text display-6">{{ stats.total_users }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card stat-card-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Toplam Evcil Hayvan</h5>
+                    <p class="card-text display-6">{{ stats.total_pets }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card stat-card-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Toplam Analiz</h5>
+                    <p class="card-text display-6">{{ stats.total_analyses }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card stat-card-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Aktif Kullanıcı</h5>
+                    <p class="card-text display-6">{{ stats.active_users }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="section-header">
+                <h3>Yönetim İşlemleri</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Recent Users -->
+        <div class="col-lg-6 mb-4">
+            <div class="card admin-card">
+                <div class="admin-card-header">
+                    <h5 class="mb-0">Son Kayıt Olan Kullanıcılar</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_users %}
+                    <div class="list-group">
+                        {% for user in recent_users %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ user.username }}</h6>
+                                    <p class="mb-1 text-muted">{{ user.email }}</p>
+                                    <small class="text-muted">{{ user.created_at.strftime('%d.%m.%Y') }}</small>
+                                </div>
+                                <div>
+                                    {% if user.is_active %}
+                                    <span class="badge badge-success">Aktif</span>
+                                    {% else %}
+                                    <span class="badge badge-secondary">Pasif</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <p class="lead">Kayıtlı kullanıcı bulunmamaktadır.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="col-lg-6 mb-4">
+            <div class="card admin-card">
+                <div class="admin-card-header">
+                    <h5 class="mb-0">Hızlı İşlemler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{{ url_for('admin.users') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-users me-3"></i>Kullanıcı Yönetimi
+                        </a>
+                        <a href="{{ url_for('admin.subscription_plans') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-coins me-3"></i>Abonelik Planları
+                        </a>
+                        <a href="{{ url_for('admin.system_settings') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-cog me-3"></i>Sistem Ayarları
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chart-bar me-3"></i>İstatistikler
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

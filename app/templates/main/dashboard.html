@@ -1,0 +1,478 @@
+{% extends "base.html" %}
+
+{% block title %}PetVoice AI - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dashboard specific styles */
+    .stat-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-left: 4px solid var(--soft-blue);
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green), var(--soft-yellow));
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border-left: 4px solid var(--soft-green);
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover .stat-icon {
+        transform: scale(1.1);
+    }
+    
+    .pet-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    }
+    
+    .pet-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .analysis-item {
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--soft-blue);
+        padding: 15px;
+        margin-bottom: 10px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    }
+    
+    .analysis-item:hover {
+        background-color: rgba(135, 206, 235, 0.1);
+        transform: translateX(5px);
+        border-left: 4px solid var(--soft-green);
+    }
+    
+    .quick-action-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+    
+    .quick-action-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .quick-action-btn {
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        padding: 20px 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        cursor: pointer;
+    }
+    
+    /* Unique colorful buttons */
+    .btn-record {
+        background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    }
+    
+    .btn-add-pet {
+        background: linear-gradient(135deg, #38ef7d, #11998e);
+    }
+    
+    .btn-history {
+        background: linear-gradient(135deg, #45b7d1, #007bff);
+    }
+    
+    .btn-profile {
+        background: linear-gradient(135deg, #f6d365, #fda085);
+    }
+    
+    .quick-action-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        color: white;
+    }
+    
+    /* Animated gradient effect */
+    .quick-action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: 0.5s;
+    }
+    
+    .quick-action-btn:hover::before {
+        left: 100%;
+    }
+    
+    .quick-action-btn i {
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+        font-size: 2rem;
+    }
+    
+    .quick-action-btn:hover i {
+        transform: scale(1.2) rotate(10deg);
+    }
+    
+    .section-header {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        border-radius: 2px;
+    }
+    
+    .welcome-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .welcome-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(30deg);
+    }
+    
+    .animated-stat {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+    
+    .animated-stat:nth-child(1) { animation-delay: 0.1s; }
+    .animated-stat:nth-child(2) { animation-delay: 0.2s; }
+    .animated-stat:nth-child(3) { animation-delay: 0.3s; }
+    .animated-stat:nth-child(4) { animation-delay: 0.4s; }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.6s ease forwards;
+        opacity: 0;
+    }
+    
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.3s; }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    /* Paw print effect */
+    .paw-print {
+        position: absolute;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .paw-container {
+        position: relative;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 paw-container">
+    <!-- Welcome Card -->
+    <div class="card welcome-card fade-in">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="mb-3">Hoş geldiniz, {{ current_user.first_name or current_user.username }}!</h1>
+                    <p class="lead mb-0">PetVoice AI dashboard'unuza hoş geldiniz. Evcil hayvanlarınızın seslerini analiz etmeye hazır mısınız?</p>
+                </div>
+                <div class="col-lg-3 text-center d-none d-lg-block">
+                    <i class="fas fa-paw fa-4x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-4 animated-stat">
+            <div class="card stat-card h-100">
+                <div class="card-body text-center">
+                    <div class="stat-icon bg-primary text-white mx-auto">
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <h5 class="card-title">Evcil Hayvanlar</h5>
+                    <p class="card-text display-5 fw-bold text-primary">{{ dashboard_data.total_pets }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4 animated-stat">
+            <div class="card stat-card h-100">
+                <div class="card-body text-center">
+                    <div class="stat-icon bg-success text-white mx-auto">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h5 class="card-title">Toplam Analiz</h5>
+                    <p class="card-text display-5 fw-bold text-success">{{ dashboard_data.total_analyses }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4 animated-stat">
+            <div class="card stat-card h-100">
+                <div class="card-body text-center">
+                    <div class="stat-icon bg-info text-white mx-auto">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h5 class="card-title">Bu Ay</h5>
+                    <p class="card-text display-5 fw-bold text-info">0</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4 animated-stat">
+            <div class="card stat-card h-100">
+                <div class="card-body text-center">
+                    <div class="stat-icon bg-warning text-white mx-auto">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h5 class="card-title">Bildirimler</h5>
+                    <p class="card-text display-5 fw-bold text-warning">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Pets Section -->
+        <div class="col-lg-6 mb-4 fade-in">
+            
+            <div class="section-header">
+                <h3>Evcil Hayvanlarım</h3>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    {% if pets %}
+                    <div class="row">
+                        {% for pet in pets %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card pet-card h-100">
+                                <div class="card-body text-center">
+                                    <div class="stat-icon bg-light mx-auto mb-3">
+                                        <i class="fas fa-paw text-primary"></i>
+                                    </div>
+                                    <h5 class="card-title">{{ pet.name }}</h5>
+                                    <p class="card-text">
+                                        <small class="text-muted">{{ pet.species }}{% if pet.breed %} - {{ pet.breed }}{% endif %}</small>
+                                    </p>
+                                    <a href="{{ url_for('analysis.pets') }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-paw me-1"></i>Detaylar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-paw fa-3x text-muted mb-3"></i>
+                        <p class="mb-3">Henüz evcil hayvan eklememişsiniz.</p>
+                        <a href="{{ url_for('analysis.add_pet') }}" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i>İlk evcil hayvanınızı ekleyin
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Analyses Section -->
+        <div class="col-lg-6 mb-4 fade-in">
+            <div class="section-header">
+                <h3>Son Analizler</h3>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    {% if dashboard_data.recent_analyses %}
+                    <div class="list-group list-group-flush">
+                        {% for analysis in dashboard_data.recent_analyses %}
+                        <a href="{{ url_for('analysis.analysis_result', analysis_id=analysis.id) }}" class="list-group-item list-group-item-action analysis-item mb-2">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="mb-1">
+                                    <i class="fas fa-paw me-1 text-primary"></i>{{ analysis.unique_id }}
+                                </h6>
+                                <small class="text-muted">{{ analysis.created_at.strftime('%d.%m.%Y') }}</small>
+                            </div>
+                            <p class="mb-2 text-truncate">{{ analysis.original_filename }}</p>
+                            <small>
+                                {% if analysis.analysis_status == 'completed' %}
+                                <span class="badge bg-success">Tamamlandı</span>
+                                {% elif analysis.analysis_status == 'processing' %}
+                                <span class="badge bg-warning">İşleniyor</span>
+                                {% else %}
+                                <span class="badge bg-danger">Hata</span>
+                                {% endif %}
+                            </small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-microphone-alt fa-3x text-muted mb-3"></i>
+                        <p class="mb-3">Henüz analiz yapmamışsınız.</p>
+                        <a href="{{ url_for('analysis.upload_sound') }}" class="btn btn-primary">
+                            <i class="fas fa-play-circle me-2"></i>İlk analizinizi yapın
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row fade-in">
+        <div class="col-12">
+            <div class="section-header">
+                <h3>Hızlı İşlemler</h3>
+            </div>
+            <div class="card quick-action-card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('analysis.upload_sound') }}" class="btn btn-record quick-action-btn w-100 py-3">
+                                <i class="fas fa-microphone-alt mb-2"></i>
+                                <span>Ses Kaydet</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('analysis.add_pet') }}" class="btn btn-add-pet quick-action-btn w-100 py-3">
+                                <i class="fas fa-plus-circle mb-2"></i>
+                                <span>Hayvan Ekle</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('analysis.analysis_history') }}" class="btn btn-history quick-action-btn w-100 py-3">
+                                <i class="fas fa-history mb-2"></i>
+                                <span>Geçmiş Analizler</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('auth.profile') }}" class="btn btn-profile quick-action-btn w-100 py-3">
+                                <i class="fas fa-user-edit mb-2"></i>
+                                <span>Profil Düzenle</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Simple animation on scroll
+document.addEventListener('DOMContentLoaded', function() {
+    // Trigger animations when elements come into view
+    const animatedElements = document.querySelectorAll('.animated-stat, .fade-in');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+    
+    // Create paw prints randomly in the background
+    const pawContainer = document.querySelector('.paw-container');
+    for (let i = 0; i < 15; i++) {
+        const paw = document.createElement('div');
+        paw.classList.add('paw-print');
+        paw.innerHTML = '<i class="fas fa-paw"></i>';
+        paw.style.left = Math.random() * 100 + '%';
+        paw.style.top = Math.random() * 100 + '%';
+        paw.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        paw.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+        pawContainer.appendChild(paw);
+    }
+});
+</script>
+{% endblock %}

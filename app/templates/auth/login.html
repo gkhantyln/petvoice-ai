@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}PetVoice AI - Giriş Yap{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Login page enhanced styles with gradient backgrounds and animations */
+    .login-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 20px 0;
+    }
+    
+    /* Floating elements */
+    .floating-element {
+        position: absolute;
+        animation: floatRandom 8s ease-in-out infinite;
+    }
+
+    .floating-element:nth-child(1) {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .floating-element:nth-child(2) {
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .floating-element:nth-child(3) {
+        bottom: 30%;
+        left: 5%;
+        animation-delay: 4s;
+    }
+
+    @keyframes floatRandom {
+        0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+        33% { transform: translateY(-15px) translateX(10px) rotate(120deg); }
+        66% { transform: translateY(10px) translateX(-5px) rotate(240deg); }
+    }
+
+    .floating-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .login-container {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 500px;
+        margin: 2rem auto;
+    }
+    
+    .login-card {
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        margin: 0;
+    }
+    
+    .login-card:hover {
+        box-shadow: 0 35px 70px rgba(0,0,0,0.3);
+        transform: translateY(-10px);
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, #5d7cff 0%, #9b4dff 100%);
+        color: white;
+        padding: 2.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:rgba(255,255,255,.1);stop-opacity:1" /><stop offset="100%" style="stop-color:rgba(255,255,255,0);stop-opacity:0" /></radialGradient></defs><circle cx="20" cy="5" r="2" fill="url(%23a)"/><circle cx="80" cy="15" r="1.5" fill="url(%23a)"/><circle cx="50" cy="10" r="1" fill="url(%23a)"/></svg>') repeat;
+        opacity: 0.3;
+        animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .login-body {
+        padding: 2.5rem;
+    }
+    
+    .form-control {
+        border-radius: 12px;
+        padding: 15px 20px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-control:focus {
+        border-color: #5d7cff;
+        box-shadow: 0 0 0 0.25rem rgba(93, 124, 255, 0.25);
+    }
+    
+    .btn-login {
+        border-radius: 50px;
+        padding: 15px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ffa5a5 100%);
+        border: none;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        color: white;
+        font-size: 1.1rem;
+        position: relative;
+        overflow: hidden;
+        margin-top: 10px;
+    }
+    
+    .btn-login::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-login:hover::before {
+        left: 100%;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        background: linear-gradient(135deg, #ffa5a5 0%, #ff6b6b 100%);
+        filter: brightness(1.1);
+    }
+    
+    .form-check-input {
+        border-radius: 8px;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .form-check-input:checked {
+        background-color: #5d7cff;
+        border-color: #5d7cff;
+    }
+    
+    .social-login {
+        border-top: 1px solid #e9ecef;
+        padding-top: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .social-btn {
+        border-radius: 50px;
+        padding: 12px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #e9ecef;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+    }
+    
+    .social-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .social-btn:first-child:hover {
+        background: linear-gradient(135deg, #ff416c, #ff4b2b);
+        color: white;
+        border-color: #ff416c;
+    }
+    
+    .social-btn:last-child:hover {
+        background: linear-gradient(135deg, #4267B2, #3b5998);
+        color: white;
+        border-color: #4267B2;
+    }
+    
+    .forgot-password {
+        color: #5d7cff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .forgot-password::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background: linear-gradient(to right, #ff9a9e, #fecfef);
+        transition: width 0.3s ease;
+    }
+    
+    .forgot-password:hover {
+        color: #667eea;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+    
+    .forgot-password:hover::after {
+        width: 100%;
+    }
+    
+    .signup-link {
+        color: #5d7cff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        background: linear-gradient(to right, #a8edea, #fed6e3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .signup-link:hover {
+        text-decoration: none;
+        transform: translateY(-2px);
+        text-shadow: 0 0 10px rgba(93, 124, 255, 0.5);
+    }
+    
+    .input-group-text {
+        background: rgba(248, 249, 250, 0.8);
+        border: 2px solid #e9ecef;
+        border-left: none;
+        border-radius: 0 12px 12px 0;
+        padding: 0 20px;
+        font-size: 1.1rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .input-group .form-control {
+        border-radius: 12px 0 0 12px;
+        border-right: none;
+    }
+    
+    .password-toggle {
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .login-header {
+            padding: 1.5rem;
+        }
+        
+        .login-body {
+            padding: 1.5rem;
+        }
+        
+        .form-control {
+            padding: 12px 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <!-- Floating elements -->
+    <div class="floating-element">
+        <div class="floating-icon" style="background: linear-gradient(135deg, #6bcfff 0%, #6bffea 100%);">
+            <i class="fas fa-dog"></i>
+        </div>
+    </div>
+    <div class="floating-element">
+        <div class="floating-icon" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa5a5 100%);">
+            <i class="fas fa-cat"></i>
+        </div>
+    </div>
+    <div class="floating-element">
+        <div class="floating-icon" style="background: linear-gradient(135deg, #ffcc6b 0%, #ff9e6b 100%);">
+            <i class="fas fa-dove"></i>
+        </div>
+    </div>
+    
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-paw fa-3x mb-3"></i>
+                <h2>Hesabınıza giriş yapın</h2>
+                <p class="mb-0">PetVoice AI dünyasına erişin</p>
+            </div>
+            
+            <div class="login-body">
+                <form method="POST">
+                    <div class="mb-4">
+                        <label for="username_or_email" class="form-label fw-bold">Kullanıcı Adı veya E-posta</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input type="text" class="form-control" id="username_or_email" name="username_or_email" required placeholder="Kullanıcı adı veya e-posta">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-bold">Şifre</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="password" name="password" required placeholder="Şifreniz">
+                            <span class="input-group-text password-toggle" onclick="togglePassword()">
+                                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+                        <label class="form-check-label" for="remember_me">Beni hatırla</label>
+                    </div>
+                    
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-login">Giriş Yap</button>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="#" class="forgot-password">Şifremi unuttum</a>
+                    </div>
+                </form>
+                
+                <div class="social-login">
+                    <p class="text-center mb-3">Veya şununla giriş yapın:</p>
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                            <button class="btn social-btn w-100">
+                                <i class="fab fa-google text-danger"></i> Google
+                            </button>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <button class="btn social-btn w-100">
+                                <i class="fab fa-facebook text-primary"></i> Facebook
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p>Hesabınız yok mu? <a href="{{ url_for('auth.register') }}" class="signup-link">Kayıt olun</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('togglePasswordIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+// Parallax effect for floating elements
+window.addEventListener('scroll', function() {
+    const scrolled = window.pageYOffset;
+    const parallax = document.querySelectorAll('.floating-element');
+    const speed = 0.5;
+
+    parallax.forEach(element => {
+        const yPos = -(scrolled * speed);
+        element.style.transform = `translate3d(0, ${yPos}px, 0)`;
+    });
+});
+
+// Dynamic gradient animation for background
+let gradientPosition = 0;
+setInterval(() => {
+    gradientPosition += 1;
+    if (gradientPosition > 360) gradientPosition = 0;
+    
+    const loginWrapper = document.querySelector('.login-wrapper');
+    if (loginWrapper) {
+        loginWrapper.style.background = `linear-gradient(${135 + gradientPosition}deg, #667eea 0%, #764ba2 100%)`;
+    }
+}, 100);
+</script>
+{% endblock %}

@@ -1,0 +1,435 @@
+from flask import Flask, render_template_string
+
+app = Flask(__name__)
+
+# Simple test route to verify our template works
+@app.route('/')
+def test():
+    # Simple HTML template for testing
+    template = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Upload Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Test File Upload and Recording</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="test-form" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label class="form-label">Dosya Yükleme Testi</label>
+                                <div class="file-upload-area" id="file-drop-area">
+                                    <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-muted"></i>
+                                    <p class="mb-2">Dosyaları buraya sürükleyin veya seçmek için tıklayın</p>
+                                    <input type="file" class="form-control d-none" id="sound_file" name="sound_file" accept="audio/*">
+                                    <button type="button" class="btn btn-primary mt-2" id="browse-files-btn">
+                                        <i class="fas fa-folder-open me-2"></i>Dosya Seç
+                                    </button>
+                                    <div class="file-info mt-3" id="file-info"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Ses Kaydı Testi</label>
+                                <div class="border rounded p-3 bg-light" id="recording-area">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <button type="button" class="btn btn-danger" id="record-btn">
+                                            <i class="fas fa-microphone me-2"></i>Kaydı Başlat
+                                        </button>
+                                        <div class="recording-status" id="recording-status">
+                                            <span class="recording-indicator" id="recording-indicator"></span>
+                                            <span id="status-text">Kayıt durduruldu</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="progress">
+                                            <div class="progress-bar" id="recording-progress" role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">0:00</small>
+                                        <small class="text-muted" id="recording-timer">0:00</small>
+                                        <small class="text-muted">1:00</small>
+                                    </div>
+                                    
+                                    <input type="file" class="d-none" id="recorded-audio-file" name="sound_file">
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success">Formu Gönder</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Test page loaded');
+            
+            // Element selections
+            const browseFilesBtn = document.getElementById('browse-files-btn');
+            const soundFileInput = document.getElementById('sound_file');
+            const fileDropArea = document.getElementById('file-drop-area');
+            const fileInfo = document.getElementById('file-info');
+            const recordBtn = document.getElementById('record-btn');
+            const recordingStatus = document.getElementById('recording-status');
+            const recordingIndicator = document.getElementById('recording-indicator');
+            const statusText = document.getElementById('status-text');
+            const recordingTimer = document.getElementById('recording-timer');
+            const recordingProgress = document.getElementById('recording-progress');
+            const recordedAudioFile = document.getElementById('recorded-audio-file');
+            const recordingArea = document.getElementById('recording-area');
+            const testForm = document.getElementById('test-form');
+            
+            // Recording variables
+            let mediaRecorder;
+            let audioChunks = [];
+            let recordingInterval;
+            let recordingStartTime;
+            let isRecording = false;
+            
+            // File selection button event
+            if (browseFilesBtn && soundFileInput) {
+                browseFilesBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    console.log('Browse files button clicked');
+                    soundFileInput.click();
+                });
+            }
+            
+            // File input change event
+            if (soundFileInput && fileInfo) {
+                soundFileInput.addEventListener('change', function(e) {
+                    console.log('File selection changed');
+                    if (e.target.files && e.target.files.length > 0) {
+                        const file = e.target.files[0];
+                        const fileName = file.name;
+                        const fileSize = (file.size / (1024 * 1024)).toFixed(2); // MB
+                        
+                        console.log('File selected:', fileName, 'Size:', fileSize, 'MB');
+                        
+                        // Display file info
+                        fileInfo.innerHTML = `
+                            <div class="alert alert-success mb-0">
+                                <i class="fas fa-file-audio me-2"></i>
+                                <strong>Seçilen dosya:</strong> ${fileName}<br>
+                                <small>Boyut: ${fileSize} MB</small>
+                            </div>
+                        `;
+                        fileInfo.classList.add('visible');
+                    } else {
+                        // Hide file info when selection is cancelled
+                        fileInfo.classList.remove('visible');
+                    }
+                });
+            }
+            
+            // File drop area click event
+            if (fileDropArea) {
+                fileDropArea.addEventListener('click', function(e) {
+                    // If browse button is clicked, let its own handler work
+                    if (e.target.closest('#browse-files-btn') || e.target.id === 'browse-files-btn') {
+                        return;
+                    }
+                    
+                    console.log('File drop area clicked');
+                    if (soundFileInput) {
+                        soundFileInput.click();
+                    }
+                });
+            }
+            
+            // Drag and drop events
+            if (fileDropArea && soundFileInput) {
+                fileDropArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    fileDropArea.classList.add('active');
+                });
+                
+                fileDropArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    fileDropArea.classList.remove('active');
+                });
+                
+                fileDropArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    fileDropArea.classList.remove('active');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        // Assign to file input
+                        soundFileInput.files = files;
+                        
+                        // Trigger change event manually
+                        const changeEvent = new Event('change');
+                        soundFileInput.dispatchEvent(changeEvent);
+                    }
+                });
+            }
+            
+            // Recording button event
+            if (recordBtn) {
+                recordBtn.addEventListener('click', async function() {
+                    console.log('Record button clicked, isRecording:', isRecording);
+                    
+                    if (!isRecording) {
+                        // Start recording
+                        try {
+                            const stream = await navigator.mediaDevices.getUserMedia({ 
+                                audio: {
+                                    echoCancellation: true,
+                                    noiseSuppression: true,
+                                    sampleRate: 44100
+                                } 
+                            });
+                            
+                            mediaRecorder = new MediaRecorder(stream);
+                            audioChunks = [];
+                            
+                            mediaRecorder.ondataavailable = function(event) {
+                                if (event.data.size > 0) {
+                                    audioChunks.push(event.data);
+                                }
+                            };
+                            
+                            mediaRecorder.onstop = function() {
+                                console.log('Recording stopped');
+                                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                                
+                                // Assign recorded file to input
+                                const file = new File([audioBlob], 'recording.wav', { type: 'audio/wav' });
+                                const dataTransfer = new DataTransfer();
+                                dataTransfer.items.add(file);
+                                
+                                if (recordedAudioFile) {
+                                    recordedAudioFile.files = dataTransfer.files;
+                                }
+                                
+                                // Update file info
+                                if (fileInfo) {
+                                    fileInfo.innerHTML = `
+                                        <div class="alert alert-danger mb-0">
+                                            <i class="fas fa-microphone me-2"></i>
+                                            <strong>Kaydedilen ses:</strong> Kayıt tamamlandı<br>
+                                            <small>Boyut: ${(audioBlob.size / 1024).toFixed(1)} KB</small>
+                                        </div>
+                                    `;
+                                    fileInfo.classList.add('visible');
+                                }
+                                
+                                // Stop stream
+                                stream.getTracks().forEach(track => track.stop());
+                            };
+                            
+                            mediaRecorder.start();
+                            startRecording();
+                            
+                        } catch (error) {
+                            console.error('Microphone access error:', error);
+                            alert('Mikrofon erişimi sağlanamadı. Lütfen mikrofon izinlerini kontrol edin.');
+                        }
+                    } else {
+                        // Stop recording
+                        if (mediaRecorder && mediaRecorder.state === 'recording') {
+                            mediaRecorder.stop();
+                        }
+                        stopRecording();
+                    }
+                });
+            }
+            
+            // Start recording function
+            function startRecording() {
+                isRecording = true;
+                recordingStartTime = Date.now();
+                
+                // UI updates
+                if (recordBtn) {
+                    recordBtn.classList.add('btn-success');
+                    recordBtn.classList.remove('btn-danger');
+                    recordBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Kaydı Durdur';
+                }
+                
+                if (recordingIndicator) {
+                    recordingIndicator.classList.add('active');
+                }
+                
+                if (statusText) {
+                    statusText.textContent = 'Kayıt yapılıyor...';
+                    statusText.parentElement.classList.add('text-danger');
+                }
+                
+                // Start timer
+                recordingInterval = setInterval(updateRecordingTimer, 100);
+            }
+            
+            // Stop recording function
+            let recordingDuration = 0;
+            
+            function stopRecording() {
+                isRecording = false;
+                recordingDuration = (Date.now() - recordingStartTime) / 1000; // in seconds
+                
+                // Stop timer
+                if (recordingInterval) {
+                    clearInterval(recordingInterval);
+                }
+                
+                // UI updates
+                if (recordBtn) {
+                    recordBtn.classList.add('btn-danger');
+                    recordBtn.classList.remove('btn-success');
+                    recordBtn.innerHTML = '<i class="fas fa-microphone me-2"></i>Kaydı Başlat';
+                }
+                
+                if (recordingIndicator) {
+                    recordingIndicator.classList.remove('active');
+                }
+                
+                if (statusText) {
+                    statusText.textContent = 'Kayıt tamamlandı';
+                    statusText.parentElement.classList.remove('text-danger');
+                }
+                
+                // Reset progress bar
+                if (recordingProgress) {
+                    recordingProgress.style.width = '0%';
+                }
+                
+                if (recordingTimer) {
+                    recordingTimer.textContent = '0:00';
+                }
+            }
+            
+            // Update recording timer function
+            function updateRecordingTimer() {
+                if (!isRecording) return;
+                
+                const elapsed = (Date.now() - recordingStartTime) / 1000; // seconds
+                const maxDuration = 60; // 1 minute maximum
+                
+                // Update timer
+                if (recordingTimer) {
+                    recordingTimer.textContent = formatTime(elapsed);
+                }
+                
+                // Update progress bar
+                if (recordingProgress) {
+                    const progress = Math.min((elapsed / maxDuration) * 100, 100);
+                    recordingProgress.style.width = progress + '%';
+                }
+                
+                // Stop if maximum duration reached
+                if (elapsed >= maxDuration) {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                    }
+                    stopRecording();
+                }
+            }
+            
+            // Format time function
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+            
+            // Form submission check
+            if (testForm) {
+                testForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const uploadedSoundFile = document.getElementById('sound_file');
+                    const recordedSoundFile = document.getElementById('recorded-audio-file');
+                    
+                    // Sound file check
+                    const hasUploadedFile = uploadedSoundFile && uploadedSoundFile.files && uploadedSoundFile.files.length > 0;
+                    const hasRecordedAudio = recordedSoundFile && recordedSoundFile.files && recordedSoundFile.files.length > 0;
+                    
+                    if (!hasUploadedFile && !hasRecordedAudio) {
+                        alert('Lütfen ses dosyası yükleyin veya ses kaydı yapın.');
+                        return;
+                    }
+                    
+                    alert('Form başarıyla gönderildi!');
+                    console.log('Form submitted successfully');
+                });
+            }
+            
+            console.log('All event listeners initialized successfully');
+        });
+    </script>
+    
+    <style>
+        .file-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #0d6efd;
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        
+        .file-upload-area.active {
+            border-color: #0d6efd;
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+        
+        .recording-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #dc3545;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .recording-indicator.active {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+        
+        .recording-status.recording {
+            color: #dc3545;
+            animation: blink 1s infinite;
+        }
+        
+        .progress {
+            border-radius: 10px;
+            height: 10px;
+        }
+        
+        .progress-bar {
+            border-radius: 10px;
+        }
+    </style>
+</body>
+</html>
+    '''
+    return render_template_string(template)
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5001)

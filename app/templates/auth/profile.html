@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}PetVoice AI - Profil{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Profile page specific styles */
+    .profile-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .profile-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+    
+    .profile-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    
+    .profile-card-header {
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+        border: none;
+        padding: 1.25rem;
+    }
+    
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: var(--soft-blue);
+        box-shadow: 0 0 0 0.25rem rgba(135, 206, 235, 0.25);
+    }
+    
+    .btn-update {
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 600;
+        background: linear-gradient(135deg, var(--soft-blue), var(--soft-green));
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .btn-update:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        background: linear-gradient(135deg, var(--soft-green), var(--soft-blue));
+    }
+    
+    .settings-item {
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--soft-blue);
+        margin-bottom: 0.5rem;
+    }
+    
+    .settings-item:hover {
+        background-color: rgba(135, 206, 235, 0.1);
+        transform: translateX(5px);
+    }
+    
+    .settings-link {
+        color: #495057;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .settings-link:hover {
+        color: var(--soft-blue);
+        text-decoration: none;
+    }
+    
+    .input-group-text {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-left: none;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .input-group .form-control {
+        border-radius: 10px 0 0 10px;
+        border-right: none;
+    }
+    
+    .disabled-input {
+        background-color: #f8f9fa;
+        opacity: 0.7;
+    }
+    
+    .subscription-badge {
+        background: linear-gradient(135deg, var(--soft-purple), var(--soft-pink));
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .section-header {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        border-radius: 2px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h1 class="mb-3">Profil Bilgilerim</h1>
+                <p class="mb-0 lead">Kişisel bilgilerinizi buradan düzenleyebilirsiniz.</p>
+            </div>
+            <div class="col-lg-3 text-center d-none d-lg-block">
+                <div class="stat-icon bg-white text-primary mx-auto" style="width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="section-header">
+                <h3>Profil Bilgileri</h3>
+            </div>
+            <div class="card profile-card">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="first_name" class="form-label fw-bold">Ad</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-signature"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ current_user.first_name or '' }}" placeholder="Adınız">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <label for="last_name" class="form-label fw-bold">Soyad</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-signature"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ current_user.last_name or '' }}" placeholder="Soyadınız">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="email" class="form-label fw-bold">E-posta</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" required placeholder="E-posta adresiniz">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="username" class="form-label fw-bold">Kullanıcı Adı</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text" class="form-control disabled-input" id="username" name="username" value="{{ current_user.username }}" disabled>
+                            </div>
+                            <div class="form-text text-muted">Kullanıcı adı değiştirilemez.</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="phone" class="form-label fw-bold">Telefon</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-phone"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="phone" name="phone" value="{{ current_user.phone or '' }}" placeholder="Telefon numaranız">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <label for="country" class="form-label fw-bold">Ülke</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-globe"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="country" name="country" value="{{ current_user.country or '' }}" placeholder="Ülkeniz">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="city" class="form-label fw-bold">Şehir</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-city"></i>
+                                </span>
+                                <input type="text" class="form-control" id="city" name="city" value="{{ current_user.city or '' }}" placeholder="Şehriniz">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Abonelik Türü</label>
+                            <div>
+                                <span class="subscription-badge">{{ current_user.subscription_type }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-update">Bilgileri Güncelle</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="section-header">
+                <h3>Hesap Ayarları</h3>
+            </div>
+            <div class="card profile-card">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item settings-item">
+                            <a href="#" class="settings-link">
+                                <i class="fas fa-key me-2"></i>Şifre Değiştir
+                            </a>
+                        </li>
+                        <li class="list-group-item settings-item">
+                            <a href="#" class="settings-link">
+                                <i class="fas fa-bell me-2"></i>Bildirim Ayarları
+                            </a>
+                        </li>
+                        <li class="list-group-item settings-item">
+                            <a href="#" class="settings-link">
+                                <i class="fas fa-shield-alt me-2"></i>Gizlilik Ayarları
+                            </a>
+                        </li>
+                        <li class="list-group-item settings-item">
+                            <a href="#" class="settings-link">
+                                <i class="fas fa-user-cog me-2"></i>Hesap Ayarları
+                            </a>
+                        </li>
+                        <li class="list-group-item settings-item">
+                            <a href="#" class="settings-link text-danger">
+                                <i class="fas fa-trash-alt me-2"></i>Hesabı Sil
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

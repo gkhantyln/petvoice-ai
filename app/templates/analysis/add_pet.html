@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}PetVoice AI - Evcil Hayvan Ekle{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Add Pet page specific styles */
+    .add-pet-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .add-pet-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .add-pet-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    
+    .add-pet-card-header {
+        background: linear-gradient(90deg, var(--soft-purple), var(--soft-pink));
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+        border: none;
+        padding: 1.25rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--soft-purple);
+        box-shadow: 0 0 0 0.25rem rgba(204, 93, 232, 0.25);
+    }
+    
+    .btn-add-pet {
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #51cf66, #37b24d);
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(81, 207, 102, 0.3);
+        color: white;
+    }
+    
+    .btn-add-pet:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(81, 207, 102, 0.4);
+        background: linear-gradient(135deg, #37b24d, #51cf66);
+    }
+    
+    .btn-cancel {
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #fcc419, #f59f00);
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(252, 196, 25, 0.3);
+        color: white;
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(252, 196, 25, 0.4);
+        background: linear-gradient(135deg, #f59f00, #fcc419);
+    }
+    
+    .info-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+    
+    .info-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    
+    .info-card-header {
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+        border: none;
+        padding: 1.25rem;
+    }
+    
+    .info-item {
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--soft-purple);
+        margin-bottom: 0.5rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .info-item:hover {
+        background-color: rgba(204, 93, 232, 0.1);
+        transform: translateX(5px);
+    }
+    
+    .section-header {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--soft-purple), var(--soft-pink));
+        border-radius: 2px;
+    }
+    
+    .input-group-text {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-left: none;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .input-group .form-control {
+        border-radius: 10px 0 0 10px;
+        border-right: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Add Pet Header -->
+    <div class="add-pet-header">
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h1 class="mb-3">Yeni Evcil Hayvan Ekle</h1>
+                <p class="mb-0 lead">Evcil hayvanınızın bilgilerini girerek ses analizi yapmaya başlayın.</p>
+            </div>
+            <div class="col-lg-3 text-center d-none d-lg-block">
+                <i class="fas fa-paw fa-4x opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="section-header">
+                <h3>Hayvan Bilgileri</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card add-pet-card">
+                <div class="add-pet-card-header">
+                    <h5 class="mb-0">Temel Bilgiler</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label for="name" class="form-label fw-bold">Adı</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-signature"></i>
+                                </span>
+                                <input type="text" class="form-control" id="name" name="name" required placeholder="Hayvanınızın adı">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="species" class="form-label fw-bold">Tür</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-dog"></i>
+                                    </span>
+                                    <select class="form-select" id="species" name="species" required>
+                                        <option value="">Seçiniz</option>
+                                        <option value="Kedi">Kedi</option>
+                                        <option value="Köpek">Köpek</option>
+                                        <option value="Kuş">Kuş</option>
+                                        <option value="At">At</option>
+                                        <option value="İnek">İnek</option>
+                                        <option value="Koyun">Koyun</option>
+                                        <option value="Keçi">Keçi</option>
+                                        <option value="Domuz">Domuz</option>
+                                        <option value="Tavuk">Tavuk</option>
+                                        <option value="Balık">Balık</option>
+                                        <option value="Diğer">Diğer</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <label for="breed" class="form-label fw-bold">Cins</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-paw"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="breed" name="breed" placeholder="Cinsi (isteğe bağlı)">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="age" class="form-label fw-bold">Yaş</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-birthday-cake"></i>
+                                    </span>
+                                    <input type="number" class="form-control" id="age" name="age" min="0" placeholder="Yaş (isteğe bağlı)">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <label for="gender" class="form-label fw-bold">Cinsiyet</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-venus-mars"></i>
+                                    </span>
+                                    <select class="form-select" id="gender" name="gender">
+                                        <option value="">Belirtilmemiş</option>
+                                        <option value="Erkek">Erkek</option>
+                                        <option value="Dişi">Dişi</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="weight" class="form-label fw-bold">Ağırlık (kg)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-weight"></i>
+                                </span>
+                                <input type="number" class="form-control" id="weight" name="weight" step="0.1" min="0" placeholder="Ağırlık (isteğe bağlı)">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="health_conditions" class="form-label fw-bold">Sağlık Durumu</label>
+                            <textarea class="form-control" id="health_conditions" name="health_conditions" rows="3" placeholder="Sağlıkla ilgili bilgiler (isteğe bağlı)"></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="behavioral_notes" class="form-label fw-bold">Davranış Notları</label>
+                            <textarea class="form-control" id="behavioral_notes" name="behavioral_notes" rows="3" placeholder="Davranışla ilgili özel notlar (isteğe bağlı)"></textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('analysis.pets') }}" class="btn btn-cancel">
+                                <i class="fas fa-times me-2"></i>İptal
+                            </a>
+                            <button type="submit" class="btn btn-add-pet">
+                                <i class="fas fa-plus me-2"></i>Evcil Hayvanı Ekle
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="section-header">
+                <h3>Bilgi</h3>
+            </div>
+            <div class="card info-card">
+                <div class="info-card-header">
+                    <h5 class="mb-0">Neden Önemli?</h5>
+                </div>
+                <div class="card-body">
+                    <div class="info-item">
+                        <i class="fas fa-brain text-purple me-2"></i>
+                        <strong>Tür ve cins bilgisi AI analizini etkiler</strong>
+                        <p class="mb-0 text-muted small">Her türün ses özellikleri farklıdır</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-heartbeat text-danger me-2"></i>
+                        <strong>Sağlık durumu analizde dikkate alınır</strong>
+                        <p class="mb-0 text-muted small">Hastalık ses tonlarını etkileyebilir</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock text-warning me-2"></i>
+                        <strong>Yaş bilgisi duygusal durum analizinde kullanılır</strong>
+                        <p class="mb-0 text-muted small">Yavru ve yaşlı hayvanların sesleri farklıdır</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-chart-line text-success me-2"></i>
+                        <strong>Davranış notları analiz doğruluğunu artırır</strong>
+                        <p class="mb-0 text-muted small">Bağlam bilgisi önemli sonuçlar verir</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card info-card">
+                <div class="info-card-header">
+                    <h5 class="mb-0">İpuçları</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Bilgileri doğru girmeniz analiz doğruluğunu artırır</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Sağlık bilgilerini güncel tutun</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Davranış değişikliklerini not alın</small>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Düzenli olarak bilgileri güncelleyin</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: petvoice
+      POSTGRES_USER: petvoice_user
+      POSTGRES_PASSWORD: petvoice_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # Redis for Celery
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  # Main web application
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://petvoice_user:petvoice_password@db:5432/petvoice
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-secret-key-here
+      - GOOGLE_API_KEY=your-google-api-key-here
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  # Celery worker for background tasks
+  worker:
+    build: .
+    command: celery -A app.celery_worker.celery worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://petvoice_user:petvoice_password@db:5432/petvoice
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-secret-key-here
+      - GOOGLE_API_KEY=your-google-api-key-here
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

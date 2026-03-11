@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .file-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #0d6efd;
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        
+        .btn-record {
+            border-radius: 12px;
+            padding: 15px 25px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff4757, #fa5252);
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.3);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-record:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(255, 71, 87, 0.4);
+        }
+        
+        .audio-file-input {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 1px;
+            height: 1px;
+        }
+        
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .file-info.visible {
+            display: block;
+        }
+        
+        .debug-console {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: #333;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            overflow-y: auto;
+            z-index: 10000;
+            border-top: 2px solid #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Button Test - Minimal Example</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- File Upload Section -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Dosya Yükleme</label>
+                            <div class="file-upload-area" id="file-drop-area">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-muted"></i>
+                                <p class="mb-2">Dosyaları buraya sürükleyin veya seçmek için tıklayın</p>
+                                <input type="file" class="form-control audio-file-input" id="sound_file" accept="audio/*">
+                                <button type="button" class="btn btn-primary mt-2" id="browse-files-btn">
+                                    <i class="fas fa-folder-open me-2"></i>Dosya Seç
+                                </button>
+                                <div class="file-info mt-3" id="file-info"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recording Section -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Ses Kaydı</label>
+                            <div class="border rounded p-3 bg-light">
+                                <button type="button" class="btn btn-record" id="record-btn">
+                                    <i class="fas fa-microphone me-2"></i>Kaydı Başlat
+                                </button>
+                                <div class="mt-3">
+                                    <span id="status-text">Kayıt durduruldu</span>
+                                </div>
+                                <!-- Hidden input for recorded audio -->
+                                <input type="file" class="audio-file-input" id="recorded-audio-file">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Debug Console -->
+    <div class="debug-console" id="debug-console"></div>
+    
+    <script>
+        // Debug console function
+        function debugLog(message) {
+            const consoleElement = document.getElementById('debug-console');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            consoleElement.appendChild(logEntry);
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+            console.log(`[DEBUG] ${message}`);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('DOM yüklendi');
+            
+            // Element selections
+            const browseFilesBtn = document.getElementById('browse-files-btn');
+            const soundFileInput = document.getElementById('sound_file');
+            const fileDropArea = document.getElementById('file-drop-area');
+            const fileInfo = document.getElementById('file-info');
+            const recordBtn = document.getElementById('record-btn');
+            
+            debugLog(`Elementler: browseFilesBtn=${!!browseFilesBtn}, soundFileInput=${!!soundFileInput}, recordBtn=${!!recordBtn}`);
+            
+            // File selection button event - FIXED VERSION
+            if (browseFilesBtn && soundFileInput) {
+                browseFilesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    debugLog('Dosya seç butonuna tıklandı');
+                    soundFileInput.click();
+                });
+                
+                // File input change event
+                soundFileInput.addEventListener('change', function(e) {
+                    debugLog('Dosya seçimi değişti');
+                    if (e.target.files && e.target.files.length > 0) {
+                        const file = e.target.files[0];
+                        const fileName = file.name;
+                        const fileSize = (file.size / (1024 * 1024)).toFixed(2); // MB
+                        
+                        debugLog(`Seçilen dosya: ${fileName}, Boyut: ${fileSize} MB`);
+                        
+                        // Display file info
+                        fileInfo.innerHTML = `
+                            <div class="alert alert-success mb-0">
+                                <i class="fas fa-file-audio me-2"></i>
+                                <strong>Seçilen dosya:</strong> ${fileName}<br>
+                                <small>Boyut: ${fileSize} MB</small>
+                            </div>
+                        `;
+                        fileInfo.classList.add('visible');
+                    } else {
+                        // Hide file info when selection is cancelled
+                        fileInfo.classList.remove('visible');
+                        debugLog('Dosya seçimi iptal edildi');
+                    }
+                });
+                
+                // File drop area click event
+                fileDropArea.addEventListener('click', function(e) {
+                    // If browse button is clicked, let its own handler work
+                    if (e.target.closest('#browse-files-btn') || e.target.id === 'browse-files-btn') {
+                        debugLog('Dosya seç butonuna tıklandı, işlem yapılıyor');
+                        return;
+                    }
+                    
+                    debugLog('Dosya yükleme alanına tıklandı');
+                    soundFileInput.click();
+                });
+            }
+            
+            // Recording button event - FIXED VERSION
+            if (recordBtn) {
+                recordBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    debugLog('Kayıt butonuna tıklandı');
+                    
+                    // Toggle recording state
+                    const isRecording = recordBtn.classList.contains('recording');
+                    if (isRecording) {
+                        // Stop recording
+                        recordBtn.classList.remove('recording');
+                        recordBtn.innerHTML = '<i class="fas fa-microphone me-2"></i>Kaydı Başlat';
+                        document.getElementById('status-text').textContent = 'Kayıt durduruldu';
+                        debugLog('Kayıt durduruldu');
+                    } else {
+                        // Start recording
+                        recordBtn.classList.add('recording');
+                        recordBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Kaydı Durdur';
+                        document.getElementById('status-text').textContent = 'Kayıt yapılıyor...';
+                        debugLog('Kayıt başlatıldı');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

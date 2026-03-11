@@ -1,0 +1,621 @@
+{% extends "base.html" %}
+
+{% block title %}PetVoice AI - Analiz Sonucu{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Result page specific styles */
+    .result-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .btn-all-analyses {
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #3bc9db, #15aabf);
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(59, 201, 219, 0.3);
+        color: white;
+    }
+    
+    .btn-all-analyses:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(59, 201, 219, 0.4);
+        background: linear-gradient(135deg, #15aabf, #3bc9db);
+    }
+    
+    .result-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .result-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    
+    .result-card-header {
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+        border: none;
+        padding: 1.25rem;
+    }
+    
+    .btn-download-analysis {
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #cc5de8, #a23de0);
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(162, 61, 224, 0.3);
+        color: white;
+    }
+    
+    .btn-download-analysis:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(162, 61, 224, 0.4);
+        background: linear-gradient(135deg, #a23de0, #cc5de8);
+    }
+    
+    .analysis-section {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: none;
+    }
+    
+    .analysis-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(135, 206, 235, 0.3);
+    }
+    
+    .analysis-title {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    
+    .stat-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        text-align: center;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card-header {
+        padding: 1rem;
+        color: white;
+        font-weight: 700;
+    }
+    
+    .stat-card-body {
+        padding: 1.5rem;
+    }
+    
+    .stat-card-primary .stat-card-header {
+        background: linear-gradient(135deg, var(--soft-blue), var(--soft-green));
+    }
+    
+    .stat-card-success .stat-card-header {
+        background: linear-gradient(135deg, var(--soft-green), #20c997);
+    }
+    
+    .progress {
+        border-radius: 10px;
+        height: 20px;
+        background-color: #e9ecef;
+    }
+    
+    .progress-bar {
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    
+    .alert-info {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .btn-action {
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .btn-primary-action {
+        background: linear-gradient(135deg, #4dabf7, #3b5bdb);
+        border: none;
+        color: white;
+    }
+    
+    .btn-success-action {
+        background: linear-gradient(135deg, #51cf66, #37b24d);
+        border: none;
+        color: white;
+    }
+    
+    .btn-outline-primary-action {
+        background: transparent;
+        border: 2px solid #4dabf7;
+        color: #4dabf7;
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .btn-primary-action:hover {
+        background: linear-gradient(135deg, #3b5bdb, #4dabf7);
+    }
+    
+    .btn-success-action:hover {
+        background: linear-gradient(135deg, #37b24d, #51cf66);
+    }
+    
+    .btn-outline-primary-action:hover {
+        background: linear-gradient(135deg, #4dabf7, #3b5bdb);
+        color: white;
+    }
+    
+    .section-header {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+        border-radius: 2px;
+    }
+    
+    .pet-info-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+    
+    .pet-info-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    
+    .pet-info-header {
+        background: linear-gradient(90deg, var(--soft-purple), var(--soft-pink));
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+        border: none;
+        padding: 1.25rem;
+    }
+    
+    .markdown-content h2 {
+        font-size: 1.5rem;
+        margin-top: 1.8rem;
+        margin-bottom: 1.2rem;
+        color: #2c3e50;
+        border-bottom: 3px solid var(--soft-blue);
+        padding-bottom: 0.5rem;
+        font-weight: 700;
+    }
+
+    .markdown-content h3 {
+        font-size: 1.3rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: #34495e;
+        font-weight: 600;
+    }
+
+    .markdown-content ul, .markdown-content ol {
+        margin-bottom: 1.2rem;
+        padding-left: 1.5rem;
+    }
+
+    .markdown-content li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+
+    .markdown-content p {
+        margin-bottom: 1.2rem;
+        line-height: 1.7;
+        color: #333;
+    }
+
+    .markdown-content pre {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .markdown-content code {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 0.375rem;
+        padding: 0.2rem 0.4rem;
+        font-size: 0.875em;
+    }
+
+    /* Additional styling for better readability */
+    .analysis-section {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid #e9ecef;
+    }
+
+    .analysis-section h2 {
+        margin-top: 0;
+        color: #2c3e50;
+    }
+
+    /* Emojis styling */
+    .markdown-content h2 span.emoji {
+        margin-right: 0.5rem;
+    }
+
+    /* Line breaks for better readability */
+    .markdown-content br {
+        display: block;
+        margin: 0.5rem 0;
+    }
+
+    /* Strong text styling */
+    .markdown-content strong {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    
+    /* Spectrogram image styling */
+    .spectrogram-img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Result Header -->
+    <div class="result-header">
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h1 class="mb-3">Analiz Sonucu</h1>
+                <p class="mb-0 lead">Hayvanınızın ses analizinin detaylı sonuçlarını burada görüntüleyin.</p>
+            </div>
+            <div class="col-lg-3 text-center d-none d-lg-block">
+                <i class="fas fa-chart-line fa-4x opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="section-header mb-0">
+                    <h3>Analiz Detayları</h3>
+                </div>
+                <a href="{{ url_for('analysis.analysis_history') }}" class="btn btn-all-analyses">
+                    <i class="fas fa-history me-2"></i>Tüm Analizler
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card result-card">
+                <div class="result-card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Analiz Detayları</h5>
+                        <span class="badge {% if analysis.analysis_status == 'completed' %}bg-success{% elif analysis.analysis_status == 'processing' %}bg-warning{% else %}bg-danger{% endif %}">
+                            {% if analysis.analysis_status == 'completed' %}Tamamlandı
+                            {% elif analysis.analysis_status == 'processing' %}İşleniyor
+                            {% else %}Hata{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if analysis.analysis_status == 'completed' %}
+                    <div class="card pet-info-card mb-4">
+                        <div class="pet-info-header">
+                            <h5 class="mb-0">Hayvan Bilgileri</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong><i class="fas fa-paw me-2 text-primary"></i>Adı:</strong> {{ pet.name }}</p>
+                                    <p><strong><i class="fas fa-dog me-2 text-success"></i>Türü:</strong> {{ pet.species }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong><i class="fas fa-calendar me-2 text-info"></i>Kayıt Tarihi:</strong> {{ analysis.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                                    <p><strong><i class="fas fa-file-audio me-2 text-warning"></i>Dosya Adı:</strong> {{ analysis.original_filename }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <div class="analysis-header">
+                            <h2 class="analysis-title">AI Analizi Sonuçları</h2>
+                            <button class="btn btn-download-analysis" onclick="downloadAnalysis()">
+                                <i class="fas fa-download me-1"></i>Analiz Sonuçlarını İndir
+                            </button>
+                        </div>
+                        <div class="markdown-content">
+                            {{ analysis.ai_analysis|markdown_to_html|safe }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card stat-card stat-card-primary">
+                                <div class="stat-card-header">
+                                    Güven Skoru
+                                </div>
+                                <div class="stat-card-body">
+                                    <div class="display-6 text-primary fw-bold">{{ analysis.confidence_score }}%</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card stat-card stat-card-success">
+                                <div class="stat-card-header">
+                                    Tespit Edilen Duygu
+                                </div>
+                                <div class="stat-card-body">
+                                    <div class="display-6 text-success fw-bold">{{ analysis.emotion_detected }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5 class="mb-3">Aciliyet Seviyesi</h5>
+                        <div class="progress">
+                            <div class="progress-bar {% if analysis.urgency_level == 'Düşük' %}bg-success{% elif analysis.urgency_level == 'Orta' %}bg-warning{% elif analysis.urgency_level == 'Yüksek' %}bg-danger{% else %}bg-danger{% endif %}" 
+                                 role="progressbar" style="width: {% if analysis.urgency_level == 'Düşük' %}25%{% elif analysis.urgency_level == 'Orta' %}50%{% elif analysis.urgency_level == 'Yüksek' %}75%{% else %}100%{% endif %}">
+                                {{ analysis.urgency_level }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if analysis.veterinary_recommendation %}
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading"><i class="fas fa-stethoscope me-2"></i>Veteriner Önerisi</h5>
+                        <p>{{ analysis.veterinary_recommendation }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Yükleniyor...</span>
+                        </div>
+                        <h4 class="mt-3">Analiz devam ediyor...</h4>
+                        <p class="lead">Lütfen birkaç dakika içinde tekrar kontrol edin.</p>
+                        
+                        <!-- Real-time progress bar -->
+                        <div class="progress mb-3">
+                            <div id="analysis-progress" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%">
+                                <span id="progress-text">0%</span>
+                            </div>
+                        </div>
+                        <p id="progress-status" class="lead">Analiz başlatılıyor...</p>
+                        
+                        <button class="btn btn-primary btn-lg" onclick="location.reload()">
+                            <i class="fas fa-sync-alt me-2"></i>Sayfayı Yenile
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            {% if analysis.spectrogram_path and analysis.analysis_status == 'completed' %}
+            <div class="card result-card mb-4">
+                <div class="result-card-header">
+                    <h5 class="mb-0">Spektrogram</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Fixed image path handling - using the new uploads route -->
+                    {% if analysis.spectrogram_path %}
+                        {% set clean_path = analysis.spectrogram_path.replace('\\', '/') %}
+                        <!-- Extract the relative path from the uploads directory -->
+                        {% if 'uploads/sounds/spectrograms/' in clean_path %}
+                            {% set relative_path = clean_path.split('uploads/sounds/spectrograms/')[-1] %}
+                            <img src="/uploads/sounds/spectrograms/{{ relative_path }}" alt="Spektrogram" class="spectrogram-img">
+                        {% elif 'sounds/spectrograms/' in clean_path %}
+                            {% set relative_path = clean_path.split('sounds/spectrograms/')[-1] %}
+                            <img src="/uploads/sounds/spectrograms/{{ relative_path }}" alt="Spektrogram" class="spectrogram-img">
+                        {% else %}
+                            <!-- Fallback to direct path -->
+                            <img src="/uploads/{{ clean_path.split('/')[-1] }}" alt="Spektrogram" class="spectrogram-img">
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if analysis.json_spectrogram_path %}
+            <div class="card result-card mb-4">
+                <div class="result-card-header">
+                    <h5 class="mb-0">Interaktif Spektrogram</h5>
+                </div>
+                <div class="card-body">
+                    {% set clean_json_path = analysis.json_spectrogram_path.replace('\\', '/') %}
+                    <!-- Extract the relative path from the uploads directory -->
+                    {% if 'uploads/sounds/spectrograms/' in clean_json_path %}
+                        {% set relative_json_path = clean_json_path.split('uploads/sounds/spectrograms/')[-1] %}
+                        <div id="interactive-spectrogram" 
+                             data-json-path="/uploads/sounds/spectrograms/{{ relative_json_path }}"
+                             style="width: 100%; height: 300px; background: #000; position: relative; border-radius: 10px;">
+                            <canvas style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    {% elif 'sounds/spectrograms/' in clean_json_path %}
+                        {% set relative_json_path = clean_json_path.split('sounds/spectrograms/')[-1] %}
+                        <div id="interactive-spectrogram" 
+                             data-json-path="/uploads/sounds/spectrograms/{{ relative_json_path }}"
+                             style="width: 100%; height: 300px; background: #000; position: relative; border-radius: 10px;">
+                            <canvas style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    {% else %}
+                        <!-- Fallback to direct path -->
+                        <div id="interactive-spectrogram" 
+                             data-json-path="/uploads/{{ clean_json_path.split('/')[-1] }}"
+                             style="width: 100%; height: 300px; background: #000; position: relative; border-radius: 10px;">
+                            <canvas style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+            
+            <div class="card result-card">
+                <div class="result-card-header">
+                    <h5 class="mb-0">İşlemler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-action btn-primary-action" onclick="downloadAnalysis()">
+                            <i class="fas fa-file-download me-2"></i>Analiz Sonuçlarını İndir
+                        </button>
+                        <button class="btn btn-action btn-success-action">
+                            <i class="fas fa-share-alt me-2"></i>Sonuçları Paylaş
+                        </button>
+                        <a href="{{ url_for('analysis.upload_sound') }}" class="btn btn-action btn-outline-primary-action">
+                            <i class="fas fa-plus me-2"></i>Yeni Analiz Yap
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/spectrogram.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    // WebSocket bağlantısı
+    const socket = io();
+    
+    // Analiz ID'si
+    const analysisId = {{ analysis.id }};
+    
+    // Analiz sonuçlarını indirme fonksiyonu
+    function downloadAnalysis() {
+        // Analiz verilerini topla
+        const analysisData = {
+            "analiz_bilgileri": {
+                "analiz_id": {{ analysis.id }},
+                "hayvan_adi": "{{ pet.name }}",
+                "hayvan_turu": "{{ pet.species }}",
+                "kayit_tarihi": "{{ analysis.created_at.strftime('%d.%m.%Y %H:%M') }}",
+                "dosya_adi": "{{ analysis.original_filename }}",
+                "durum": "{{ analysis.analysis_status }}"
+            },
+            "ai_analiz_sonuclari": `{{ analysis.ai_analysis|replace('##', 'SECTION:')|replace('#', 'SUBSECTION:')|replace('\n', '\\n')|replace('"', '\\"')|safe }}`,
+            "ozel_bilgiler": {
+                "guven_skoru": "{{ analysis.confidence_score }}%",
+                "tespit_edilen_duygu": "{{ analysis.emotion_detected }}",
+                "aciliyet_seviyesi": "{{ analysis.urgency_level }}",
+                "veteriner_onerisi": "{{ analysis.veterinary_recommendation }}"
+            }
+        };
+        
+        // JSON dosyası oluştur
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(analysisData, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "petvoice_analiz_{{ analysis.id }}.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
+    
+    // Analiz odasına katıl
+    socket.emit('join_analysis_room', {analysis_id: analysisId});
+    
+    // Progress güncellemelerini dinle
+    socket.on('analysis_progress', function(data) {
+        if (data.analysis_id == analysisId) {
+            document.getElementById('analysis-progress').style.width = data.progress + '%';
+            document.getElementById('progress-text').textContent = data.progress + '%';
+            document.getElementById('progress-status').textContent = data.status;
+        }
+    });
+    
+    // Analiz tamamlandığında yenile
+    socket.on('analysis_complete', function(data) {
+        if (data.analysis_id == analysisId) {
+            location.reload();
+        }
+    });
+    
+    // Hata durumunda bildir
+    socket.on('analysis_error', function(data) {
+        if (data.analysis_id == analysisId) {
+            document.getElementById('progress-status').textContent = 'Analiz sırasında hata oluştu: ' + data.error;
+            document.getElementById('analysis-progress').className = 'progress-bar bg-danger';
+        }
+    });
+    
+    // Sayfadan ayrılınca odadan ayrıl
+    window.addEventListener('beforeunload', function() {
+        socket.emit('leave_analysis_room', {analysis_id: analysisId});
+    });
+</script>
+{% endblock %}

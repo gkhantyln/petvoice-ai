@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PetVoice AI - Hayvan Ses Analizi{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+    <style>
+        /* Apply Be Vietnam Pro font throughout the site */
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        /* Modern colorful navbar styles */
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #ff6b6b, #4dabf7, #51cf66, #fcc419);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            animation: gradientShift 3s ease infinite;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .navbar {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+        }
+        
+        .nav-link {
+            font-weight: 600;
+            margin: 0 8px;
+            padding: 10px 15px !important;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: #555 !important;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .nav-link:hover {
+            background: linear-gradient(45deg, var(--soft-blue), var(--soft-green));
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(45deg, var(--soft-blue), var(--soft-green));
+            color: white !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .dropdown-toggle::after {
+            margin-left: 0.5em;
+        }
+        
+        /* Different button styles with unique colors */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #4dabf7, #1864ab);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #1864ab, #4dabf7) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(24, 100, 171, 0.4);
+        }
+        
+        .btn-success-custom {
+            background: linear-gradient(135deg, #51cf66, #2b8a3e);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .btn-success-custom:hover {
+            background: linear-gradient(135deg, #2b8a3e, #51cf66) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(43, 138, 62, 0.4);
+        }
+        
+        .btn-warning-custom {
+            background: linear-gradient(135deg, #fcc419, #e67700);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .btn-warning-custom:hover {
+            background: linear-gradient(135deg, #e67700, #fcc419) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(230, 119, 0, 0.4);
+        }
+        
+        .btn-danger-custom {
+            background: linear-gradient(135deg, #ff6b6b, #c92a2a);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .btn-danger-custom:hover {
+            background: linear-gradient(135deg, #c92a2a, #ff6b6b) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(201, 42, 42, 0.4);
+        }
+        
+        .btn-info-custom {
+            background: linear-gradient(135deg, #3bc9db, #0b7285);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .btn-info-custom:hover {
+            background: linear-gradient(135deg, #0b7285, #3bc9db) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(11, 114, 133, 0.4);
+        }
+        
+        .btn-purple-custom {
+            background: linear-gradient(135deg, #cc5de8, #8435b5);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .btn-purple-custom:hover {
+            background: linear-gradient(135deg, #8435b5, #cc5de8) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(132, 53, 181, 0.4);
+        }
+        
+        .btn-pink-custom {
+            background: linear-gradient(135deg, #f06595, #a61e4d);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .btn-pink-custom:hover {
+            background: linear-gradient(135deg, #a61e4d, #f06595) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(166, 30, 77, 0.4);
+        }
+        
+        .user-dropdown {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .user-dropdown:hover {
+            background: linear-gradient(135deg, #fad0c4, #ff9a9e) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .user-dropdown .fas {
+            margin-right: 8px;
+        }
+        
+        .register-btn {
+            background: linear-gradient(45deg, #845ef7, #5c7cfa);
+            color: white !important;
+            border-radius: 50px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .register-btn:hover {
+            background: linear-gradient(45deg, #5c7cfa, #845ef7) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(92, 124, 250, 0.4);
+        }
+        
+        /* Mobile navbar toggle */
+        .navbar-toggler {
+            border: none;
+            padding: 8px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, var(--soft-blue), var(--soft-green));
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(135, 206, 235, 0.25);
+        }
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        
+        /* Gradient border for navbar */
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--soft-blue), var(--soft-green), var(--soft-yellow), var(--soft-pink), var(--soft-purple));
+        }
+        
+        /* Apply font to headings */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Apply font to buttons */
+        .btn {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 600;
+        }
+        
+        /* Enhanced Footer Styles */
+        .footer-bg {
+            background: linear-gradient(135deg, #2c3e50, #1a2a3a);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--soft-blue), var(--soft-green), var(--soft-yellow), var(--soft-pink), var(--soft-purple));
+        }
+        
+        .footer-brand {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .footer-icon {
+            color: var(--soft-blue);
+            text-shadow: 0 0 10px rgba(77, 171, 247, 0.5);
+        }
+        
+        .footer-heading {
+            position: relative;
+            padding-bottom: 10px;
+            font-weight: 700;
+            color: var(--soft-blue);
+        }
+        
+        .footer-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--soft-blue), var(--soft-green));
+            border-radius: 2px;
+        }
+        
+        .footer-links li {
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links li:hover {
+            transform: translateX(5px);
+        }
+        
+        .footer-link {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .footer-link:hover {
+            color: var(--soft-blue);
+            text-decoration: none;
+        }
+        
+        .footer-link i {
+            font-size: 0.7rem;
+            color: var(--soft-green);
+        }
+        
+        .footer-description {
+            color: #ced4da;
+            line-height: 1.7;
+        }
+        
+        .social-links {
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .social-link:hover {
+            background: linear-gradient(135deg, var(--soft-blue), var(--soft-green));
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(77, 171, 247, 0.4);
+        }
+        
+        .footer-contact-icon {
+            color: var(--soft-green);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .footer-contact li {
+            display: flex;
+            align-items: flex-start;
+            color: #ced4da;
+        }
+        
+        .newsletter-input {
+            border-radius: 50px 0 0 50px;
+            border: none;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .newsletter-input::placeholder {
+            color: #adb5bd;
+        }
+        
+        .newsletter-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: none;
+            color: #fff;
+        }
+        
+        .btn-newsletter {
+            border-radius: 0 50px 50px 0;
+            background: linear-gradient(135deg, #4dabf7, #3b5bdb);
+            border: none;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-newsletter:hover {
+            background: linear-gradient(135deg, #3b5bdb, #4dabf7);
+            transform: translateY(-2px);
+        }
+        
+        .footer-bottom {
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-bottom-link {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .footer-bottom-link:hover {
+            color: var(--soft-blue);
+            text-decoration: none;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .footer-bg {
+                text-align: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .footer-heading::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top position-relative">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                <i class="fas fa-paw me-2"></i>PetVoice AI
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+                
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link btn-primary-custom {% if request.endpoint == 'main.dashboard' %}active{% endif %}" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-success-custom {% if request.endpoint == 'analysis.pets' %}active{% endif %}" href="{{ url_for('analysis.pets') }}">Evcil Hayvanlarım</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-warning-custom {% if request.endpoint == 'analysis.upload_sound' %}active{% endif %}" href="{{ url_for('analysis.upload_sound') }}">Ses Analizi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-info-custom {% if request.endpoint == 'analysis.analysis_history' %}active{% endif %}" href="{{ url_for('analysis.analysis_history') }}">Analiz Geçmişi</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle user-dropdown" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>{{ current_user.first_name or current_user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}"><i class="fas fa-user-circle me-2"></i>Profil</a></li>
+                            {% if current_user.admin %}
+                            <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-cog me-2"></i>Yönetici Paneli</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item btn-danger-custom" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link btn-purple-custom" href="{{ url_for('auth.login') }}">Giriş Yap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link register-btn ms-2" href="{{ url_for('auth.register') }}">Kayıt Ol</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Enhanced Footer -->
+    <footer class="footer-bg text-light mt-5">
+        <div class="container py-5">
+            <div class="row">
+                <!-- Brand Section -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <div class="footer-brand d-flex align-items-center mb-4">
+                        <i class="fas fa-paw fa-2x me-3 footer-icon"></i>
+                        <h4 class="mb-0 fw-bold">PetVoice AI</h4>
+                    </div>
+                    <p class="mb-4 footer-description">
+                        Evcil hayvanlarınızın seslerini analiz ederek duygusal durumlarını, ihtiyaçlarını ve sağlık durumlarını anlayabileceğiniz profesyonel bir platform.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="footer-heading mb-4">Hızlı Bağlantılar</h5>
+                    <ul class="footer-links list-unstyled">
+                        <li class="mb-2"><a href="{{ url_for('main.index') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Ana Sayfa</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.about') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Hakkında</a></li>
+                        <li class="mb-2"><a href="{{ url_for('main.contact') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>İletişim</a></li>
+                        <li class="mb-2"><a href="{{ url_for('auth.login') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Giriş Yap</a></li>
+                        <li><a href="{{ url_for('auth.register') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Kayıt Ol</a></li>
+                    </ul>
+                </div>
+                
+                <!-- User Links -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="footer-heading mb-4">Kullanıcı Paneli</h5>
+                    <ul class="footer-links list-unstyled">
+                        <li class="mb-2"><a href="{{ url_for('analysis.pets') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Evcil Hayvanlarım</a></li>
+                        <li class="mb-2"><a href="{{ url_for('analysis.upload_sound') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Ses Analizi</a></li>
+                        <li class="mb-2"><a href="{{ url_for('analysis.analysis_history') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Analiz Geçmişi</a></li>
+                        <li class="mb-2"><a href="{{ url_for('auth.profile') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Profilim</a></li>
+                        {% if current_user.is_authenticated and current_user.admin %}
+                        <li><a href="{{ url_for('admin.dashboard') }}" class="footer-link"><i class="fas fa-chevron-right me-2"></i>Yönetici Paneli</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="footer-heading mb-4">İletişim</h5>
+                    <ul class="footer-contact list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-map-marker-alt me-3 footer-contact-icon"></i>
+                            <span>İstanbul, Türkiye</span>
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-envelope me-3 footer-contact-icon"></i>
+                            <span>info@petvoiceai.com</span>
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-phone me-3 footer-contact-icon"></i>
+                            <span>+90 (212) 555 1234</span>
+                        </li>
+                    </ul>
+                    <div class="newsletter mt-4">
+                        <h6 class="mb-3">Bülten Aboneliği</h6>
+                        <div class="input-group">
+                            <input type="email" class="form-control newsletter-input" placeholder="E-posta adresi">
+                            <button class="btn btn-purple-custom" type="button"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom py-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <p class="mb-0">&copy; 2025 PetVoice AI - Tüm hakları saklıdır.</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item me-3"><a href="#" class="footer-bottom-link">Gizlilik Politikası</a></li>
+                            <li class="list-inline-item"><a href="#" class="footer-bottom-link">Kullanım Şartları</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

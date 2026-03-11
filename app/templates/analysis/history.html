@@ -1,0 +1,485 @@
+{% extends "base.html" %}
+
+{% block title %}PetVoice AI - Analiz Geçmişi{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --danger-gradient: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --dark-gradient: linear-gradient(135deg, #434343 0%, #000000 100%);
+        --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* Modern Header */
+    .history-header {
+        background: var(--primary-gradient);
+        color: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--card-shadow);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+    
+    .history-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(30deg);
+    }
+    
+    /* Modern Button */
+    .btn-add-analysis {
+        border-radius: 15px;
+        padding: 14px 30px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #cc5de8, #a23de0);
+        border: none;
+        transition: var(--transition);
+        box-shadow: 0 5px 20px rgba(162, 61, 224, 0.3);
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-add-analysis::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        transition: 0.6s;
+    }
+    
+    .btn-add-analysis:hover::before {
+        left: 100%;
+    }
+    
+    .btn-add-analysis:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(162, 61, 224, 0.4);
+        background: linear-gradient(135deg, #a23de0, #cc5de8);
+    }
+    
+    /* Modern Card */
+    .history-card {
+        border-radius: 20px;
+        border: none;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        margin-bottom: 2rem;
+    }
+    
+    .history-card:hover {
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        transform: translateY(-5px);
+    }
+    
+    /* Modern Table */
+    .table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .table thead th {
+        color: white;
+        border: none;
+        font-weight: 600;
+        padding: 1.2rem;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        background: #667eea; /* Single solid color for entire header */
+        /* Removed gradient to have uniform background */
+    }
+    
+    .table tbody td {
+        padding: 1.2rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #eef2f7;
+        font-weight: 500;
+    }
+    
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .table tbody tr {
+        transition: var(--transition);
+    }
+    
+    .table tbody tr:hover {
+        background-color: rgba(102, 126, 234, 0.03);
+    }
+    
+    /* Modern Badges */
+    .badge-status {
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .badge-success {
+        background: var(--success-gradient);
+        color: white;
+        box-shadow: 0 4px 10px rgba(67, 233, 123, 0.3);
+    }
+    
+    .badge-warning {
+        background: var(--warning-gradient);
+        color: white;
+        box-shadow: 0 4px 10px rgba(250, 112, 154, 0.3);
+    }
+    
+    .badge-danger {
+        background: var(--danger-gradient);
+        color: white;
+        box-shadow: 0 4px 10px rgba(255, 65, 108, 0.3);
+    }
+    
+    .badge-info {
+        background: var(--info-gradient);
+        color: white;
+        box-shadow: 0 4px 10px rgba(79, 172, 254, 0.3);
+    }
+    
+    .badge-primary {
+        background: var(--dark-gradient);
+        color: white;
+        box-shadow: 0 4px 10px rgba(67, 67, 67, 0.3);
+    }
+    
+    /* Modern Action Buttons */
+    .btn-action {
+        border-radius: 10px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        transition: var(--transition);
+        margin: 0.25rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        border: none;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-primary-action {
+        background: linear-gradient(135deg, #4dabf7, #3b5bdb);
+        color: white;
+    }
+    
+    .btn-primary-action:hover {
+        background: linear-gradient(135deg, #3b5bdb, #4dabf7);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(59, 91, 219, 0.3);
+    }
+    
+    .btn-danger-action {
+        background: linear-gradient(135deg, #ff6b6b, #fa5252);
+        color: white;
+    }
+    
+    .btn-danger-action:hover {
+        background: linear-gradient(135deg, #fa5252, #ff6b6b);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(250, 82, 82, 0.3);
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(0,0,0,0.15);
+    }
+    
+    /* Modern Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, #f8f9ff, #f0f4ff);
+        border-radius: 20px;
+        margin: 2rem 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+    }
+    
+    .empty-state::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(30deg);
+    }
+    
+    .empty-state-icon {
+        font-size: 5rem;
+        color: #adb5bd;
+        margin-bottom: 2rem;
+        animation: float 4s ease-in-out infinite;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .section-header {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 80px;
+        height: 4px;
+        background: var(--primary-gradient);
+        border-radius: 2px;
+    }
+    
+    .pet-info {
+        display: flex;
+        align-items: center;
+    }
+    
+    .pet-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 15px;
+        background: var(--primary-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+        margin-right: 15px;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        transition: var(--transition);
+    }
+    
+    .pet-info:hover .pet-avatar {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    /* Floating Animation */
+    @keyframes float {
+        0% {
+            transform: translateY(0) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-15px) rotate(10deg);
+        }
+        100% {
+            transform: translateY(0) rotate(0deg);
+        }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .history-header {
+            padding: 1.5rem;
+        }
+        
+        .table-responsive {
+            font-size: 0.85rem;
+        }
+        
+        .btn-action {
+            padding: 0.5rem 0.8rem;
+            font-size: 0.7rem;
+            margin: 0.1rem;
+        }
+        
+        .badge-status {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.65rem;
+        }
+        
+        .pet-avatar {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+    }
+    
+    /* Additional modern touches */
+    .stats-card {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .stats-number {
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .stats-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Modern Header -->
+    <div class="history-header">
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h1 class="mb-3">Analiz Geçmişi</h1>
+                <p class="mb-0 lead">Tüm ses analizlerinizi burada görüntüleyin ve yönetin.</p>
+            </div>
+            <div class="col-lg-3 text-center d-none d-lg-block">
+                <i class="fas fa-history fa-5x opacity-30"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="section-header mb-0">
+                    <h3>Geçmiş Analizler</h3>
+                </div>
+                <a href="{{ url_for('analysis.upload_sound') }}" class="btn btn-add-analysis">
+                    <i class="fas fa-plus me-2"></i>Yeni Analiz
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            {% if analyses %}
+            <div class="card history-card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Evcil Hayvan</th>
+                                    <th>Dosya</th>
+                                    <th>Duygu</th>
+                                    <th>Güven Skoru</th>
+                                    <th>Durum</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for analysis in analyses %}
+                                <tr>
+                                    <td>{{ analysis.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                                    <td>
+                                        <div class="pet-info">
+                                            <div class="pet-avatar">
+                                                <i class="fas fa-paw"></i>
+                                            </div>
+                                            <div>
+                                                {{ analysis.pet.name }}<br>
+                                                <small class="text-muted">{{ analysis.pet.species }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ analysis.original_filename }}</td>
+                                    <td>
+                                        {% if analysis.emotion_detected %}
+                                        <span class="badge badge-info badge-status">{{ analysis.emotion_detected }}</span>
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if analysis.confidence_score %}
+                                        <span class="badge badge-primary badge-status">{{ analysis.confidence_score }}%</span>
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if analysis.analysis_status == 'completed' %}
+                                        <span class="badge badge-success badge-status">Tamamlandı</span>
+                                        {% elif analysis.analysis_status == 'processing' %}
+                                        <span class="badge badge-warning badge-status">İşleniyor</span>
+                                        {% else %}
+                                        <span class="badge badge-danger badge-status">Hata</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('analysis.analysis_result', analysis_id=analysis.id) }}" class="btn btn-action btn-primary-action">
+                                            <i class="fas fa-eye me-1"></i> Görüntüle
+                                        </a>
+                                        <form method="POST" action="{{ url_for('analysis.delete_analysis', analysis_id=analysis.id) }}" class="d-inline" onsubmit="return confirm('Bu analizi silmek istediğinizden emin misiniz?');">
+                                            <button type="submit" class="btn btn-action btn-danger-action">
+                                                <i class="fas fa-trash me-1"></i> Sil
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3>Henüz analiz yapmamışsınız</h3>
+                <p class="lead mb-4">İlk ses analizinizi yaparak hayvanınızın duygusal durumunu öğrenin.</p>
+                <a href="{{ url_for('analysis.upload_sound') }}" class="btn btn-add-analysis btn-lg">
+                    <i class="fas fa-microphone-alt me-2"></i>İlk Analizi Yap
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

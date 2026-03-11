@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <!-- Gradients for spectrogram effect -->
+    <linearGradient id="spectrogramGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4dabf7;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#51cf66;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#fcc419;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#ff6b6b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cc5de8;stop-opacity:1" />
+    </linearGradient>
+    
+    <radialGradient id="circularGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.2" />
+      <stop offset="70%" style="stop-color:#51cf66;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#4dabf7;stop-opacity:0.3" />
+    </radialGradient>
+    
+    <!-- Filters for glow effects -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#51cf66" flood-opacity="0.8" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Animation keyframes -->
+    <style>
+      @keyframes pulse {
+        0% { opacity: 0.7; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.02); }
+        100% { opacity: 0.7; transform: scale(1); }
+      }
+      
+      @keyframes waveMotion {
+        0% { d: path("M50,250 C100,200 150,300 200,250 C250,200 300,300 350,250 C400,200 450,300 450,250"); }
+        25% { d: path("M50,250 C100,180 150,320 200,250 C250,180 300,320 350,250 C400,180 450,320 450,250"); }
+        50% { d: path("M50,250 C100,220 150,280 200,250 C250,220 300,280 350,250 C400,220 450,280 450,250"); }
+        75% { d: path("M50,250 C100,240 150,260 200,250 C250,240 300,260 350,250 C400,240 450,260 450,250"); }
+        100% { d: path("M50,250 C100,200 150,300 200,250 C250,200 300,300 350,250 C400,200 450,300 450,250"); }
+      }
+      
+      .pulse {
+        animation: pulse 4s ease-in-out infinite;
+      }
+      
+      .wave {
+        animation: waveMotion 8s ease-in-out infinite;
+      }
+    </style>
+  </defs>
+  
+  <!-- Circular clipping path -->
+  <clipPath id="circleClip">
+    <circle cx="250" cy="250" r="230" />
+  </clipPath>
+  
+  <!-- Background circle -->
+  <circle cx="250" cy="250" r="240" fill="url(#spectrogramGradient)" />
+  
+  <!-- Inner gradient circle -->
+  <circle cx="250" cy="250" r="230" fill="url(#circularGradient)" clip-path="url(#circleClip)" />
+  
+  <!-- Spectrogram-like waveforms -->
+  <g clip-path="url(#circleClip)" stroke="white" stroke-width="2" fill="none" opacity="0.8">
+    <!-- Main waveform -->
+    <path d="M50,250 C100,200 150,300 200,250 C250,200 300,300 350,250 C400,200 450,300 450,250" 
+          class="wave" stroke="white" stroke-width="3" />
+    
+    <!-- Secondary waveforms -->
+    <path d="M50,270 C100,220 150,320 200,270 C250,220 300,320 350,270 C400,220 450,320 450,270" 
+          class="wave" stroke="#fcc419" stroke-width="2" style="animation-delay: 1s;" />
+    
+    <path d="M50,230 C100,180 150,280 200,230 C250,180 300,280 350,230 C400,180 450,280 450,230" 
+          class="wave" stroke="#ff6b6b" stroke-width="2" style="animation-delay: 2s;" />
+  </g>
+  
+  <!-- Frequency bars -->
+  <g clip-path="url(#circleClip)" fill="white" opacity="0.7">
+    <!-- Group 1 -->
+    <rect x="80" y="150" width="6" height="200" rx="3">
+      <animate attributeName="height" values="200;150;180;200" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="y" values="150;200;170;150" dur="3s" repeatCount="indefinite" />
+    </rect>
+    <rect x="90" y="170" width="6" height="160" rx="3">
+      <animate attributeName="height" values="160;120;140;160" dur="2.5s" repeatCount="indefinite" />
+      <animate attributeName="y" values="170;210;190;170" dur="2.5s" repeatCount="indefinite" />
+    </rect>
+    <rect x="100" y="190" width="6" height="120" rx="3">
+      <animate attributeName="height" values="120;100;110;120" dur="3.5s" repeatCount="indefinite" />
+      <animate attributeName="y" values="190;210;200;190" dur="3.5s" repeatCount="indefinite" />
+    </rect>
+    
+    <!-- Group 2 -->
+    <rect x="150" y="130" width="6" height="240" rx="3">
+      <animate attributeName="height" values="240;200;220;240" dur="2.8s" repeatCount="indefinite" />
+      <animate attributeName="y" values="130;170;150;130" dur="2.8s" repeatCount="indefinite" />
+    </rect>
+    <rect x="160" y="160" width="6" height="180" rx="3">
+      <animate attributeName="height" values="180;150;165;180" dur="3.2s" repeatCount="indefinite" />
+      <animate attributeName="y" values="160;190;175;160" dur="3.2s" repeatCount="indefinite" />
+    </rect>
+    
+    <!-- Group 3 -->
+    <rect x="220" y="180" width="6" height="140" rx="3">
+      <animate attributeName="height" values="140;120;130;140" dur="2.7s" repeatCount="indefinite" />
+      <animate attributeName="y" values="180;200;190;180" dur="2.7s" repeatCount="indefinite" />
+    </rect>
+    <rect x="230" y="160" width="6" height="180" rx="3">
+      <animate attributeName="height" values="180;160;170;180" dur="3.3s" repeatCount="indefinite" />
+      <animate attributeName="y" values="160;180;170;160" dur="3.3s" repeatCount="indefinite" />
+    </rect>
+    <rect x="240" y="140" width="6" height="220" rx="3">
+      <animate attributeName="height" values="220;190;205;220" dur="2.9s" repeatCount="indefinite" />
+      <animate attributeName="y" values="140;170;155;140" dur="2.9s" repeatCount="indefinite" />
+    </rect>
+    
+    <!-- Group 4 -->
+    <rect x="300" y="150" width="6" height="200" rx="3">
+      <animate attributeName="height" values="200;180;190;200" dur="3.1s" repeatCount="indefinite" />
+      <animate attributeName="y" values="150;170;160;150" dur="3.1s" repeatCount="indefinite" />
+    </rect>
+    <rect x="310" y="170" width="6" height="160" rx="3">
+      <animate attributeName="height" values="160;140;150;160" dur="2.6s" repeatCount="indefinite" />
+      <animate attributeName="y" values="170;190;180;170" dur="2.6s" repeatCount="indefinite" />
+    </rect>
+    
+    <!-- Group 5 -->
+    <rect x="370" y="160" width="6" height="180" rx="3">
+      <animate attributeName="height" values="180;160;170;180" dur="3.4s" repeatCount="indefinite" />
+      <animate attributeName="y" values="160;180;170;160" dur="3.4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="380" y="180" width="6" height="140" rx="3">
+      <animate attributeName="height" values="140;120;130;140" dur="2.8s" repeatCount="indefinite" />
+      <animate attributeName="y" values="180;200;190;180" dur="2.8s" repeatCount="indefinite" />
+    </rect>
+    <rect x="390" y="200" width="6" height="100" rx="3">
+      <animate attributeName="height" values="100;80;90;100" dur="3.6s" repeatCount="indefinite" />
+      <animate attributeName="y" values="200;220;210;200" dur="3.6s" repeatCount="indefinite" />
+    </rect>
+  </g>
+  
+  <!-- Central sound icon with glow -->
+  <g filter="url(#glow)" transform="translate(250, 250)">
+    <circle cx="0" cy="0" r="30" fill="#ffffff" opacity="0.9" />
+    <path d="M-12 -12 L0 -20 L12 -12 L12 12 L0 20 L-12 12 Z" fill="#51cf66" />
+    <circle cx="0" cy="0" r="45" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" class="pulse" />
+  </g>
+  
+  <!-- Decorative circles -->
+  <g stroke="white" stroke-width="1" fill="none" opacity="0.3">
+    <circle cx="250" cy="250" r="180" />
+    <circle cx="250" cy="250" r="140" />
+    <circle cx="250" cy="250" r="100" />
+  </g>
+</svg>
